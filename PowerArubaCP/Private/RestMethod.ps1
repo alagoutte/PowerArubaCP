@@ -36,7 +36,10 @@ function Invoke-ArubaCPRestMethod {
         [ValidateSet("GET", "PUT", "POST", "DELETE", "PATCH")]
         [String]$method = "GET",
         [Parameter(Mandatory = $false)]
-        [psobject]$body
+        [psobject]$body,
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(1, 1000)]
+        [int]$limit
     )
 
     Begin {
@@ -48,6 +51,13 @@ function Invoke-ArubaCPRestMethod {
         $invokeParams = ${DefaultArubaCPConnection}.invokeParams
         $fullurl = "https://${Server}/${uri}"
 
+        if ($fullurl -NotMatch "\?") {
+            $fullurl += "?"
+        }
+
+        if ($limit) {
+            $fullurl += "&limit=$limit"
+        }
         #When headers, We need to have Accept and Content-type set to application/json...
         $headers = @{ Authorization = "Bearer " + $DefaultArubaCPConnection.token; Accept = "application/json"; "Content-type" = "application/json" }
 
