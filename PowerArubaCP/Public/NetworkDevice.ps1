@@ -148,7 +148,9 @@ function Get-ArubaCPNetworkDevice {
         [Parameter (Mandatory = $false, ParameterSetName = "id")]
         [int]$id,
         [Parameter (Mandatory = $false, ParameterSetName = "name", Position = 1)]
-        [string]$Name
+        [string]$Name,
+        [Parameter (Mandatory = $false)]
+        [int]$limit
     )
 
     Begin {
@@ -156,9 +158,14 @@ function Get-ArubaCPNetworkDevice {
 
     Process {
 
+        $invokeParams = @{ }
+        if ( $PsBoundParameters.ContainsKey('limit') ) {
+            $invokeParams.add( 'limit', $limit )
+        }
+
         $url = "api/network-device"
 
-        $nad = Invoke-ArubaCPRestMethod -method "GET" -uri $url
+        $nad = Invoke-ArubaCPRestMethod -method "GET" -uri $url @invokeParams
 
 
         switch ( $PSCmdlet.ParameterSetName ) {
