@@ -61,7 +61,7 @@ function Invoke-ArubaCPRestMethod {
             $fullurl += "&limit=$limit"
         }
         if ($filter) {
-            $fullurl += "&filter=$($filter | ConvertTo-Json)"
+            $fullurl += "&filter=$($filter | ConvertTo-Json -Compress)"
         }
         #When headers, We need to have Accept and Content-type set to application/json...
         $headers = @{ Authorization = "Bearer " + $DefaultArubaCPConnection.token; Accept = "application/json"; "Content-type" = "application/json" }
