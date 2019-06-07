@@ -163,16 +163,18 @@ function Get-ArubaCPNetworkDevice {
             $invokeParams.add( 'limit', $limit )
         }
 
+        switch ( $PSCmdlet.ParameterSetName ) {
+            "id" { $filter = @{ "id" = $id } }
+            "name" { $filter = @{ "name" = $name } }
+            default { }
+        }
+        $invokeParams.add( 'filter', $filter )
+
         $url = "api/network-device"
 
         $nad = Invoke-ArubaCPRestMethod -method "GET" -uri $url @invokeParams
 
-
-        switch ( $PSCmdlet.ParameterSetName ) {
-            "name" { $nad._embedded.items  | where-object { $_.name -match $name}}
-            "id" { $nad._embedded.items | where-object { $_.id -eq $id}}
-            default { $nad._embedded.items }
-        }
+        $nad._embedded.items
     }
 
     End {
