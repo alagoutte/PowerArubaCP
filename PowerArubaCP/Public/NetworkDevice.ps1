@@ -145,10 +145,24 @@ function Get-ArubaCPNetworkDevice {
     [CmdLetBinding(DefaultParameterSetName = "Default")]
 
     Param(
-        [Parameter (Mandatory = $false, ParameterSetName = "id")]
+        [Parameter (Mandatory = $false)]
+        [Parameter (ParameterSetName = "id")]
         [int]$id,
-        [Parameter (Mandatory = $false, ParameterSetName = "name", Position = 1)]
+        [Parameter (Mandatory = $false, Position = 1)]
+        [Parameter (ParameterSetName = "name")]
         [string]$Name,
+        [Parameter (Mandatory = $false)]
+        [Parameter (ParameterSetName = "filter")]
+        [string]$filter_attribute,
+        [Parameter (Mandatory = $false)]
+        [Parameter (ParameterSetName = "id")]
+        [Parameter (ParameterSetName = "name")]
+        [Parameter (ParameterSetName = "filter")]
+        [ValidateSet('equal', 'contains')]
+        [string]$filter_type,
+        [Parameter (Mandatory = $false)]
+        [Parameter (ParameterSetName = "filter")]
+        [psobject]$filter_value,
         [Parameter (Mandatory = $false)]
         [int]$limit
     )
@@ -164,11 +178,33 @@ function Get-ArubaCPNetworkDevice {
         }
 
         switch ( $PSCmdlet.ParameterSetName ) {
-            "id" { $filter = @{ "id" = $id } }
-            "name" { $filter = @{ "name" = $name } }
+            "id" {
+                $filter_value = $id
+                $filter_attribute = "id"
+            }
+            "name" {
+                $filter_value = $name
+                $filter_attribute = "name"
+            }
             default { }
         }
-        $invokeParams.add( 'filter', $filter )
+
+        if ( $PsBoundParameters.ContainsKey('filter_type') ) {
+            switch ( $filter_type ) {
+                "equal" {
+                    $filter_value = @{ "`$eq" = $filter_value }
+                }
+                "contains" {
+                    $filter_value = @{ "`$contains" = $filter_value }
+                }
+                default { }
+            }
+        }
+
+        if ($filter_value -and $filter_attribute) {
+            $filter = @{ $filter_attribute = $filter_value }
+            $invokeParams.add( 'filter', $filter )
+        }
 
         $url = "api/network-device"
 
