@@ -42,6 +42,17 @@ Describe  "Get Network Device" {
         $nad.name | Should be "pester_SW2"
         $nad.description | Should be "Add by PowerArubaCP"
     }
+
+    It "Search Network Device by name ( contains *pester*)" {
+        $nad = Get-ArubaCPNetworkDevice -name pester -filter_type contains
+        $nad.count | Should be 2
+    }
+
+    It "Search Network Device by attribute ( ip_address equal 192.0.2.1 )" {
+        $nad = Get-ArubaCPNetworkDevice -filter_attribute ip_address -filter_type equal -filter_value 192.0.2.1
+        $nad.count | Should be 1
+        $nad.ip_address | Should be "192.0.2.1"
+    }
     AfterAll {
         #Remove 2 entries
         Get-ArubaCPNetworkDevice -name pester_SW1 | Remove-ArubaCPNetworkDevice -noconfirm
