@@ -140,6 +140,16 @@ function Get-ArubaCPNetworkDevice {
 
         Get info about NetworkDevice id 23 on the ClearPass
 
+        .EXAMPLE
+        Get-ArubaCPNetworkDevice NAD-PowerArubaCP -filter_type contains
+
+        Get info about NetworkDevice where name contains NAD-PowerArubaCP
+
+       .EXAMPLE
+        Get-ArubaCPNetworkDevice -filter_attribute ip_address -filter_type equal -filter_value 192.168.1.1
+
+        Get info about NetworkDevice where ip_address equal 192.168.1.1
+
     #>
 
     [CmdLetBinding(DefaultParameterSetName = "Default")]
