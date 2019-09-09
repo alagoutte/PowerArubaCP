@@ -35,6 +35,11 @@ Describe  "Get Network Device" {
         $nad.coa_port | Should be "3799"
     }
 
+    It "Get Network Device (pester_SW1) and confirm (via Confirm-ArubaCPNetworkDevice)" {
+        $nad = Get-ArubaCPNetworkDevice | Where-Object { $_.name -eq "pester_SW1" }
+        Confirm-ArubaCPNetworkDevice $nad | Should be $true
+    }
+
     It "Search Network Device by name (pester_SW2)" {
         $nad = Get-ArubaCPNetworkDevice -name pester_SW2
         $nad.count | Should be 1
@@ -53,6 +58,7 @@ Describe  "Get Network Device" {
         $nad.count | Should be 1
         $nad.ip_address | Should be "192.0.2.1"
     }
+
     AfterAll {
         #Remove 2 entries
         Get-ArubaCPNetworkDevice -name pester_SW1 | Remove-ArubaCPNetworkDevice -noconfirm
