@@ -252,7 +252,7 @@ function Remove-ArubaCPNetworkDevice {
         [Parameter (Mandatory = $true, ParameterSetName = "id")]
         [int]$id,
         [Parameter (Mandatory = $true, ValueFromPipeline = $true, Position = 1, ParameterSetName = "nad")]
-        #ValidateScript({ Validatenad $_ })]
+        [ValidateScript( { Confirm-ArubaCPNetworkDevice $_ })]
         [psobject]$nad,
         [Parameter(Mandatory = $false)]
         [switch]$noconfirm
