@@ -227,6 +227,121 @@ function Get-ArubaCPNetworkDevice {
     }
 }
 
+function Set-ArubaCPNetworkDevice {
+
+    <#
+        .SYNOPSIS
+        Configure a Network Device (NAD) on ClearPass
+
+        .DESCRIPTION
+        Configure a Network Device (NAS) on ClearPass
+
+        .EXAMPLE
+        $nad = Get-ArubaCPNetworkDevice -name NAD-PowerArubaCP
+        PS C:\>$nad | Set-ArubaCPNetworkDevice -name NAS-PowerArubaCP2
+
+        Rename Network Device to NAD-PowerArubaCP2
+
+    #>
+
+    Param(
+        [Parameter (Mandatory = $true, ParameterSetName = "id")]
+        [int]$id,
+        [Parameter (Mandatory = $true, ValueFromPipeline = $true, Position = 1, ParameterSetName = "nad")]
+        [ValidateScript( { Confirm-ArubaCPNetworkDevice $_ })]
+        [psobject]$nad,
+        [Parameter (Mandatory = $false)]
+        [string]$description,
+        [Parameter (Mandatory = $false)]
+        [string]$name,
+        [Parameter (Mandatory = $false)]
+        [ipaddress]$ip_address,
+        [Parameter (Mandatory = $false)]
+        [string]$radius_secret,
+        [Parameter (Mandatory = $false)]
+        [string]$tacacs_secret,
+        [Parameter (Mandatory = $false)]
+        [string]$vendor_name,
+        [Parameter (Mandatory = $false)]
+        [switch]$coa_capable,
+        [Parameter (Mandatory = $false)]
+        [int]$coa_port,
+        [Parameter (Mandatory = $false)]
+        [switch]$radsec_enabled
+    )
+
+    Begin {
+    }
+
+    Process {
+
+        #get nad id from nad ps object
+        if ($nad) {
+            $id = $nad.id
+        }
+
+        $url = "api/network-device/${id}"
+        $_nad = new-Object -TypeName PSObject
+
+        if ( $PsBoundParameters.ContainsKey('id') ) {
+            $_nad | add-member -name "id" -membertype NoteProperty -Value $id
+        }
+
+        if ( $PsBoundParameters.ContainsKey('description') ) {
+            $_nad | add-member -name "description" -membertype NoteProperty -Value $description
+        }
+
+        if ( $PsBoundParameters.ContainsKey('name') ) {
+            $_nad | add-member -name "name" -membertype NoteProperty -Value $name
+        }
+
+        if ( $PsBoundParameters.ContainsKey('ip_address') ) {
+            $_nad | add-member -name "ip_address" -membertype NoteProperty -Value $ip_address.ToString()
+        }
+
+        if ( $PsBoundParameters.ContainsKey('radius_secret') ) {
+            $_nad | add-member -name "radius_secret" -membertype NoteProperty -Value $radius_secret
+        }
+
+        if ( $PsBoundParameters.ContainsKey('tacacs_secret') ) {
+            $_nad | add-member -name "tacacs_secret" -membertype NoteProperty -Value $tacacs_secret
+        }
+
+        if ( $PsBoundParameters.ContainsKey('vendor_name') ) {
+            $_nad | add-member -name "vendor_name" -membertype NoteProperty -Value $vendor_name
+        }
+
+        if ( $PsBoundParameters.ContainsKey('coa_capable') ) {
+            if ( $coa_capable ) {
+                $_nad | add-member -name "coa_capable" -membertype NoteProperty -Value $True
+            }
+            else {
+                $_nad | add-member -name "coa_capable" -membertype NoteProperty -Value $false
+            }
+        }
+
+        if ( $PsBoundParameters.ContainsKey('coa_port') ) {
+            $_nad | add-member -name "coa_port" -membertype NoteProperty -Value $coa_port
+        }
+
+        if ( $PsBoundParameters.ContainsKey('radsec_enabled') ) {
+            if ( $radsec_enabled ) {
+                $_nad | add-member -name "radsec_enabled" -membertype NoteProperty -Value $True
+            }
+            else {
+                $_nad | add-member -name "radsec_enabled" -membertype NoteProperty -Value $false
+            }
+        }
+
+        $nad = Invoke-ArubaCPRestMethod -method "PATCH" -body $_nad -uri $url
+        $nad
+
+    }
+
+    End {
+    }
+}
+
 function Remove-ArubaCPNetworkDevice {
 
     <#

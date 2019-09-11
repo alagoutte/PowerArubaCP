@@ -105,6 +105,60 @@ Describe  "Add Network Device" {
     }
 }
 
+Describe  "Configure Network Device" {
+    BeforeAll {
+        #Add 1 entry
+        Add-ArubaCPNetworkDevice -name pester_SW1 -ip_address 192.0.2.1 -radius_secret MySecurePassword -vendor Aruba -description "Add by PowerArubaCP"
+    }
+
+    It "Rename Network Device (pester_SW1 => pester_SW2) and description" {
+        Get-ArubaCPNetworkDevice -name pester_SW1 | Set-ArubaCPNetworkDevice -name pester_SW2 -description "Modified by PowerArubaCP"
+        $nad = Get-ArubaCPNetworkDevice -name pester_SW2
+        $nad.id | Should not be BeNullOrEmpty
+        $nad.name | Should be "pester_SW2"
+        $nad.description | Should be "Modified by PowerArubaCP"
+        $nad.ip_address | Should be "192.0.2.1"
+        $nad.vendor_name | Should be "Aruba"
+        $nad.coa_capable | Should be "false"
+        $nad.coa_port | Should be "3799"
+    }
+
+    It "Reconfigure Network Device (Change ip_address => 192.0.2.2 and Vendor => HPE)" {
+        Get-ArubaCPNetworkDevice -name pester_SW2 | Set-ArubaCPNetworkDevice -ip_address 192.0.2.2 -vendor "Hewlett-Packard-Enterprise"
+        $nad = Get-ArubaCPNetworkDevice -name pester_SW2
+        $nad.id | Should not be BeNullOrEmpty
+        $nad.ip_address | Should be "192.0.2.2"
+        $nad.vendor_name | Should be "Hewlett-Packard-Enterprise"
+    }
+
+    It "Reconfigure Network Device (Enable COA and Change COA Port to 6000)" {
+        Get-ArubaCPNetworkDevice -name pester_SW2 | Set-ArubaCPNetworkDevice -coa_capable -coa_port 6000
+        $nad = Get-ArubaCPNetworkDevice -name pester_SW2
+        $nad.id | Should not be BeNullOrEmpty
+        $nad.coa_capable | Should be "true"
+        $nad.coa_port | Should be "6000"
+    }
+
+    It "Reconfigure Network Device (Change RADIUS and TACACS secret)" {
+        Get-ArubaCPNetworkDevice -name pester_SW2 | Set-ArubaCPNetworkDevice -radius_secret MySecurePassword -tacacs_secret MySecurePassword
+        $nad = Get-ArubaCPNetworkDevice -name pester_SW2
+        $nad.id | Should not be BeNullOrEmpty
+        # radius_secret and tacacs_secret are always empty...
+    }
+
+    #Disable... need to check release version and some change with last 6.8 release... need to configure RadSec Settings...
+    #It "Reconfigre Network Device (Enable RadSec)" {
+    #    Get-ArubaCPNetworkDevice -name pester_SW2 | Set-ArubaCPNetworkDevice -radsec_enabled
+    #    $nad = Get-ArubaCPNetworkDevice -name pester_SW2
+    #    $nad.id | Should not be BeNullOrEmpty
+    #    $nad.radsec_enabled | Should be true
+    #}
+
+    AfterAll {
+        Get-ArubaCPNetworkDevice -name pester_SW1 | Remove-ArubaCPNetworkDevice -noconfirm
+        Get-ArubaCPNetworkDevice -name pester_SW2 | Remove-ArubaCPNetworkDevice -noconfirm
+    }
+}
 Describe  "Remove Network Device" {
 
     It "Remove Network Device by id" {
