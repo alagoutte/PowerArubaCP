@@ -29,7 +29,7 @@ For example, you can manage NAS (NetworkDevice) with the following commands:
 # Instructions
 ### Install the module
 ```powershell
-# Automated installation (Powershell 5):
+# Automated installation (Powershell 5 and later):
     Install-Module PowerArubaCP
 
 # Import the module
