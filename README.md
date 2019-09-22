@@ -5,7 +5,7 @@ This is a Powershell module for configure a Aruba ClearPass (CPPM).
 
 With this module (version 0.2.0) you can manage:
 
-- Network Device (Add / Get / Remove a NAS)
+- Network Device (Add / Get / Set / Remove a NAS)
 - Invoke API using Invoke-ArubaCPRestMethod
 
 More functionality will be added later.
@@ -18,7 +18,7 @@ All resource management functions are available with the Powershell verbs GET, A
 For example, you can manage NAS (NetworkDevice) with the following commands:
 - `Get-ArubaCPNetworkDevice`
 - `Add-ArubaCPNetworkDevice`
-<!--- `Set-ArubaSWVlans`-->
+- `Set-ArubaCPNetworkDevice`
 - `Remove-ArubaCPNetworkDevice`
 
 # Requirements
@@ -105,7 +105,7 @@ And choice a service (for example Platform)
 
 ### NAS Management
 
-You can create a new NAS `Add-ArubaCPNetworkDevice`, retrieve its information `Get-ArubaCPNetworkDevice`,<!-- modify its properties `Set-ArubaSWVLans`,--> or delete it `Remove-ArubaCPNetwork`.
+You can create a new NAS `Add-ArubaCPNetworkDevice`, retrieve its information `Get-ArubaCPNetworkDevice`, modify its properties `Set-ArubaCPNetworkDevice`, or delete it `Remove-ArubaCPNetwork`.
 
 ```powershell
 # Create a NAS
@@ -130,6 +130,21 @@ You can create a new NAS `Add-ArubaCPNetworkDevice`, retrieve its information `G
     id   name description         ip_address radius_secret tacacs_secret vendor_name coa_capable coa_port attributes
     --   ---- -----------         ---------- ------------- ------------- ----------- ----------- -------- ----------
     3004 SW1  Add by PowerArubaCP 192.0.2.1                              Aruba       False       3799
+
+# (Re)Configure NAS
+    Get-ArubaCPNetworkDevice -name SW1 | Set-ArubaCPNetworkDevice  -ip_address 192.0.2.2 -vendor_name Hewlett-Packard-Enterprise
+
+    id            : 3004
+    name          : SW1
+    description   :
+    ip_address    : 192.0.2.2
+    radius_secret :
+    tacacs_secret :
+    vendor_name   : Hewlett-Packard-Enterprise
+    coa_capable   : True
+    coa_port      : 3799
+    attributes    :
+    _links        : @{self=}
 
 # Remove a NAS
     $nad = Get-ArubaCPNetworkDevice -name SW1
@@ -161,6 +176,7 @@ Get-ArubaCPNetworkDevice
 Invoke-ArubaCPRestMethod
 Remove-ArubaCPNetworkDevice
 Set-ArubaCPCipherSSL
+Set-ArubaCPNetworkDevice
 Set-ArubaCPuntrustedSSL
 ```
 
