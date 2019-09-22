@@ -212,6 +212,7 @@ Try to connect using `Connect-ArubaCP -SkipCertificateCheck`
 # List of available command
 ```powershell
 Add-ArubaCPNetworkDevice
+Confirm-ArubaCPNetworkDevice
 Connect-ArubaCP
 Disconnect-ArubaCP
 Get-ArubaCPNetworkDevice
@@ -220,6 +221,7 @@ Remove-ArubaCPNetworkDevice
 Set-ArubaCPCipherSSL
 Set-ArubaCPNetworkDevice
 Set-ArubaCPuntrustedSSL
+Show-ArubaCPException
 ```
 
 # Author
