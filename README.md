@@ -179,18 +179,15 @@ For `Get-XXX` cmdlet like `Get-ArubaCPNetwork`, it is possible to using some hel
 
 ```powershell
 # Get NetworkDevice named NAD-PowerArubaCP
-
-Get-ArubaCPNetworkDevice -name NAD-PowerArubaCP
+    Get-ArubaCPNetworkDevice -name NAD-PowerArubaCP
 ...
 
 # Get NetworkDevice contains NAD-PowerArubaCP
-
-Get-ArubaCPNetworkDevice -name NAD-PowerArubaCP -filter_type contains
+    Get-ArubaCPNetworkDevice -name NAD-PowerArubaCP -filter_type contains
 ...
 
 # Get NetworkDevice where ip_address equal 192.168.1.1
-
-Get-ArubaCPNetworkDevice -filter_attribute ip_address -filter_type equal -filter_value 192.168.1.1
+    Get-ArubaCPNetworkDevice -filter_attribute ip_address -filter_type equal -filter_value 192.168.1.1
 ...
 
 ```
