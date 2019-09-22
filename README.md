@@ -175,6 +175,27 @@ You need to use ClearPass API syntax :
 | Inverting a filter expression | {"$not":{ filter }} |
 | Field is greater than or equal to 2 and less than 5 | {"fieldName":{"$gte":2, "$lt":5}} {"$and":[ {"fieldName":{"$gte":2}}, {"fieldName":{"$lt":5}} ]}
 
+For `Get-XXX` cmdlet like `Get-ArubaCPNetwork`, it is possible to using some helper filter (`-filter_attribute`, `-filter_type`, `-filter_value`)
+
+```powershell
+# Get NetworkDevice named NAD-PowerArubaCP
+
+Get-ArubaCPNetworkDevice -name NAD-PowerArubaCP
+...
+
+# Get NetworkDevice contains NAD-PowerArubaCP
+
+Get-ArubaCPNetworkDevice -name NAD-PowerArubaCP -filter_type contains
+...
+
+# Get NetworkDevice where ip_address equal 192.168.1.1
+
+Get-ArubaCPNetworkDevice -filter_attribute ip_address -filter_type equal -filter_value 192.168.1.1
+...
+
+```
+Actually, support only `equal` and `contains` filter type
+
 ### Disconnecting
 
 ```powershell
