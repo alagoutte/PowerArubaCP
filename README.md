@@ -10,7 +10,7 @@ With this module (version 0.2.0) you can manage:
 
 More functionality will be added later.
 
-Tested with Aruba ClearPass (using release 6.7.x)
+Tested with Aruba ClearPass (using release 6.7.x and 6.8.x)
 
 # Usage
 
@@ -24,7 +24,7 @@ For example, you can manage NAS (NetworkDevice) with the following commands:
 # Requirements
 
 - Powershell 5 or 6 (Core) (If possible get the latest version)
-- A ClearPass (with release 6.7.x) and API Client enable
+- A ClearPass (with release >= 6.7.x) and API Client enable
 
 # Instructions
 ### Install the module
