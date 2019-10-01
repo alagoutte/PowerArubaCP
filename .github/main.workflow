@@ -1,19 +1,12 @@
-workflow "script-analysis" {
-  resolves = ["analyze"]
-  on = "push"
-}
-
-workflow "pr-script-analysis" {
-  resolves = "analyze-pr"
-  on = "pull_request"
-}
-
-action "analyze-pr" {
-  uses = "devblackops/github-action-psscriptanalyzer@master"
-  secrets = ["GITHUB_TOKEN"]
-}
-
-action "analyze" {
-  uses = "devblackops/github-action-psscriptanalyzer@master"
-  secrets = ["GITHUB_TOKEN"]
-}
+name: CI
+on: [pull_request]
+jobs:
+  lint:
+    name: Run PSSA
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: lint
+      uses: devblackops/github-action-psscriptanalyzer@master
+      with:
+        repoToken: ${{ secrets.GITHUB_TOKEN }}
