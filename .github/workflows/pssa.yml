@@ -10,3 +10,4 @@ jobs:
       uses: devblackops/github-action-psscriptanalyzer@master
       with:
         repoToken: ${{ secrets.GITHUB_TOKEN }}
+        settingsPath: pssa_settings.psd1
