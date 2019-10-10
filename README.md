@@ -50,7 +50,7 @@ The first thing to do is to get API Client Token
 
 Go on WebGUI of your ClearPass, on Guest Modules
 ![](./Medias/CPPM_Guest_API.PNG)  
-Go on `Adminstration` => `API Services` => `API Clients`
+Go on `Administration` => `API Services` => `API Clients`
 
 ![](./Medias/CPPM_Create_API_Client.PNG)  
 Create a `New API Client`
