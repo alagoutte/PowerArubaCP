@@ -6,5 +6,5 @@
 
 # Copy this file to credential.ps1 (on Tests folder) and change connection settings..
 
-$ipaddress = "10.44.23.213"
-$token = "aaaaaaaaaaaaaaaaaa"
+$script:ipaddress = "10.44.23.213"
+$script:token = "aaaaaaaaaaaaaaaaaa"
