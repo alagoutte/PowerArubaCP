@@ -14,7 +14,7 @@ Tested with Aruba ClearPass (using release 6.7.x and 6.8.x)
 
 # Usage
 
-All resource management functions are available with the Powershell verbs GET, ADD, SET, REMOVE. 
+All resource management functions are available with the Powershell verbs GET, ADD, SET, REMOVE.  
 For example, you can manage NAS (NetworkDevice) with the following commands:
 - `Get-ArubaCPNetworkDevice`
 - `Add-ArubaCPNetworkDevice`
