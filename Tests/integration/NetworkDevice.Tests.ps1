@@ -42,7 +42,7 @@ Describe  "Get Network Device" {
 
     It "Search Network Device by name (pester_SW2)" {
         $nad = Get-ArubaCPNetworkDevice -name pester_SW2
-        $nad.count | Should be 1
+        @($nad).count | Should be 1
         $nad.id | Should not be BeNullOrEmpty
         $nad.name | Should be "pester_SW2"
         $nad.description | Should be "Add by PowerArubaCP"
@@ -50,12 +50,12 @@ Describe  "Get Network Device" {
 
     It "Search Network Device by name ( contains *pester*)" {
         $nad = Get-ArubaCPNetworkDevice -name pester -filter_type contains
-        $nad.count | Should be 2
+        @($nad).count | Should be 2
     }
 
     It "Search Network Device by attribute ( ip_address equal 192.0.2.1 )" {
         $nad = Get-ArubaCPNetworkDevice -filter_attribute ip_address -filter_type equal -filter_value 192.0.2.1
-        $nad.count | Should be 1
+        @($nad).count | Should be 1
         $nad.ip_address | Should be "192.0.2.1"
     }
 
@@ -165,22 +165,22 @@ Describe  "Remove Network Device" {
         Add-ArubaCPNetworkDevice -name pester_SW1 -ip_address 192.0.2.1 -radius_secret MySecurePassword -vendor Aruba
         $nad = Get-ArubaCPNetworkDevice -name pester_SW1
         $nad.name | Should be "pester_SW1"
-        $nad.count | should be 1
+        @($nad).count | should be 1
         Remove-ArubaCPNetworkDevice -id $nad.id -noconfirm
         $nad = Get-ArubaCPNetworkDevice -name pester_SW1
         $nad | Should BeNullOrEmpty
-        $nad.count | should be 0
+        @($nad).count | should be 0
     }
 
     It "Remove Network Device by name (and pipeline)" {
         Add-ArubaCPNetworkDevice -name pester_SW1 -ip_address 192.0.2.1 -radius_secret MySecurePassword -vendor Aruba
         $nad = Get-ArubaCPNetworkDevice -name pester_SW1
         $nad.name | Should be "pester_SW1"
-        $nad.count | should be 1
+        @($nad).count | should be 1
         Get-ArubaCPNetworkDevice -name pester_SW1 | Remove-ArubaCPNetworkDevice -noconfirm
         $nad = Get-ArubaCPNetworkDevice -name pester_SW1
         $nad | Should BeNullOrEmpty
-        $nad.count | should be 0
+        @($nad).count | should be 0
     }
 
     AfterEach {
