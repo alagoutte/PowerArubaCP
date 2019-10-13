@@ -6,10 +6,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    secrets: ["PSGALLERY_API_KEY"]
 
     steps:
     - uses: actions/checkout@v1
     - name: Publish
       run: |
-        pwsh -Command "Publish-Module -Path ./PowerArubaCP -NuGetApiKey $Env:PSGALLERY_API_KEY"
+        pwsh -Command "Publish-Module -Path ./PowerArubaCP -NuGetApiKey ${{ secrets.PSGALLERY_API_KEY }}"
