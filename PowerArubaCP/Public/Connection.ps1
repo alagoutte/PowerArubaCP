@@ -30,7 +30,10 @@ function Connect-ArubaCP {
         [Parameter(Mandatory = $false)]
         [String]$token,
         [Parameter(Mandatory = $false)]
-        [switch]$SkipCertificateCheck = $false
+        [switch]$SkipCertificateCheck = $false,
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(1, 65535)]
+        [int]$port=443
     )
 
     Begin {
@@ -38,7 +41,7 @@ function Connect-ArubaCP {
 
     Process {
 
-        $connection = @{server = ""; token = ""; invokeParams = ""}
+        $connection = @{server = ""; token = ""; invokeParams = ""; port = $port}
         $invokeParams = @{DisableKeepAlive = $false; UseBasicParsing = $true; SkipCertificateCheck = $SkipCertificateCheck}
 
         if ("Desktop" -eq $PSVersionTable.PsEdition) {

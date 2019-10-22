@@ -75,7 +75,8 @@ function Invoke-ArubaCPRestMethod {
 
         $Server = ${DefaultArubaCPConnection}.Server
         $invokeParams = ${DefaultArubaCPConnection}.invokeParams
-        $fullurl = "https://${Server}/${uri}"
+        $port = ${DefaultArubaCPConnection}.port
+        $fullurl = "https://${Server}:${port}/${uri}"
 
         if ($fullurl -NotMatch "\?") {
             $fullurl += "?"
