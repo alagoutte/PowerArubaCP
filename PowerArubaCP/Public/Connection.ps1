@@ -27,8 +27,16 @@ function Connect-ArubaCP {
     Param(
         [Parameter(Mandatory = $true, position = 1)]
         [String]$Server,
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $false, ParameterSetName = "token")]
         [String]$token,
+        [Parameter(Mandatory = $false, ParameterSetName = "client_id")]
+        [String]$client_id,
+        [Parameter(Mandatory = $false, ParameterSetName = "client_id")]
+        [String]$Username,
+        [Parameter(Mandatory = $false, ParameterSetName = "client_id")]
+        [SecureString]$Password,
+        [Parameter(Mandatory = $false, ParameterSetName = "client_id")]
+        [PSCredential]$Credentials,
         [Parameter(Mandatory = $false)]
         [switch]$SkipCertificateCheck = $false
     )
@@ -57,6 +65,30 @@ function Connect-ArubaCP {
                 #Disable SSL chain trust...
                 Set-ArubaCPuntrustedSSL
             }
+        }
+
+        #Try to oauth...
+        if ($client_id) {
+            #If there is a password (and a user), create a credentials
+            if ($Password) {
+                $Credentials = New-Object System.Management.Automation.PSCredential($Username, $Password)
+            }
+            #Not Credentials (and no password)
+            if ($NULL -eq $Credentials) {
+                $Credentials = Get-Credential -Message 'Please enter administrative credentials for your Clearpass'
+            }
+            $oauth = @{
+                grant_type = 'password';
+                client_id = $client_id;
+                username = $Credentials.username;
+                password = $Credentials.GetNetworkCredential().Password
+            }
+            $oauth
+            $headers = @{ Accept = "application/json"; "Content-type" = "application/json" }
+            $fullurl = "https://${Server}/api/oauth"
+            $response = Invoke-RestMethod -uri $fullurl -Method "POST" -body ($oauth | ConvertTo-Json) -Headers $headers @invokeParams
+            $response
+            $token = $response.access_token
         }
 
         $connection.server = $server
