@@ -4,6 +4,91 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+function Add-ArubaCPDeviceFingerprint {
+
+    <#
+        .SYNOPSIS
+        Add an Endpoint on ClearPass
+
+        .DESCRIPTION
+        Add an Endoint with mac address, description, status, attributes
+
+        .EXAMPLE
+        Add-ArubaCPEndpoint -mac_address 000102030405 -description "Add by PowerArubaCP" -Status Known
+
+        Add an Endpoint with MAC Address 000102030405 with Known Sattus and a description
+
+        .EXAMPLE
+        Add-ArubaCPEndpoint -mac_address 00:01:02:03:04:06 -status Unknown
+
+        Add an Endpoint with MAC Address 00:01:02:03:04:06 with Unknown Status
+
+        .EXAMPLE
+        $attributes = @{"Disabled by"="PowerArubaCP"}
+        PS >Add-ArubaCPEndpoint -mac_address 000102-030407 -Status Disabled -attributes $attributes
+
+        Add an Endpoint with MAC Address 000102030405 with Disabled Status and attributes to Disabled by PowerArubaCP
+    #>
+
+    Param(
+        [Parameter (Mandatory = $true)]
+        [string]$mac_address,
+        [Parameter (Mandatory = $false)]
+        [string]$hostname,
+        [Parameter (Mandatory = $false)]
+        [string]$device_category,
+        [Parameter (Mandatory = $false)]
+        [string]$device_name,
+        [Parameter (Mandatory = $false)]
+        [string]$device_family,
+        [Parameter (Mandatory = $False)]
+        [ValidateNotNullOrEmpty()]
+        [PSObject]$connection = $DefaultArubaCPConnection
+    )
+
+    Begin {
+    }
+
+    Process {
+
+        $uri = "api/device-profiler/device-fingerprint"
+
+        $_dfp = new-Object -TypeName PSObject
+
+
+        $_dfp | add-member -name "mac" -membertype NoteProperty -Value (Format-ArubaCPMacAddress $mac_address)
+
+        if ( $PsBoundParameters.ContainsKey('hostname') ) {
+            $_dfp | add-member -name "hostname" -membertype NoteProperty -Value $hostname
+        }
+
+        $_device = new-Object -TypeName PSObject
+        if ( $PsBoundParameters.ContainsKey('device_category') ) {
+            $_device | add-member -name "category" -membertype NoteProperty -Value $device_category
+        }
+
+        if ( $PsBoundParameters.ContainsKey('device_name') ) {
+            $_device | add-member -name "name" -membertype NoteProperty -Value $device_name
+        }
+
+        if ( $PsBoundParameters.ContainsKey('device_family') ) {
+            $_device | add-member -name "family" -membertype NoteProperty -Value $device_family
+        }
+
+        $_dfp | add-member -name "device" -membertype NoteProperty -Value $_device
+
+        <#
+        if ( $PsBoundParameters.ContainsKey('attributes') ) {
+            $_dfp | add-member -name "attributes" -membertype NoteProperty -Value $attributes
+        }
+    #>
+        $dfp = Invoke-ArubaCPRestMethod -method "POST" -body $_dfp -uri $uri -connection $connection
+        $dfp
+    }
+
+    End {
+    }
+}
 
 function Get-ArubaCPDeviceFingerprint {
 
