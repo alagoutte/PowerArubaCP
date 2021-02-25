@@ -20,6 +20,11 @@ function Get-ArubaCPDeviceFingerprint {
         Get Device FingerPrint about Endpoint 000102030405 Aruba on the ClearPass
 
         .EXAMPLE
+        Get-ArubaCPEndpoint 000102030405 | Get-ArubaCPDeviceFingerprint
+
+        Get Device FingerPrint using Endpoint 000102030405
+
+        .EXAMPLE
         Get-ArubaCPDeviceFingerprint -ip_address 192.0.2.1
 
         Get Device FingerPrint about Endpoint 192.0.2.1 Aruba on the ClearPass
@@ -31,6 +36,9 @@ function Get-ArubaCPDeviceFingerprint {
         [string]$mac_address,
         [Parameter (ParameterSetName = "ip_address", Mandatory = $true)]
         [IPAddress]$ip_address,
+        [Parameter (ParameterSetName = "endpoint", Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateScript( { Confirm-ArubaCPEndpoint $_ })]
+        [psobject]$endpoint,
         [Parameter (Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
         [PSObject]$connection = $DefaultArubaCPConnection
@@ -51,6 +59,9 @@ function Get-ArubaCPDeviceFingerprint {
             }
             "ip_address" {
                 $uri += $ip_address.ToString()
+            }
+            "endpoint" {
+                $uri += $endpoint.mac_address
             }
             default { }
         }
