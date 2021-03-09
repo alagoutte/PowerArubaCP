@@ -76,6 +76,10 @@ Describe  "Connect to a ClearPass (using multi connection)" {
         It "Use Multi connection for call Get Service" -Skip:$VersionBefore680 {
             { Get-ArubaCPService -connection $cppm } | Should -Not -Throw
         }
+        It "Use Multi connection for call Device Fingerprint" -Skip:$VersionBefore680 {
+            $ip = (Get-ArubaCPServerConfiguration -connection $cppm).management_ip
+            { Get-ArubaCPDeviceFingerprint -ip_address $ip -connection $cppm } | Should -Not -Throw
+        }
     }
 
     It "Disconnect to a ClearPass (Multi connection)" {
