@@ -36,6 +36,8 @@ function Add-ArubaCPDeviceFingerprint {
         [Parameter (Mandatory = $false)]
         [string]$hostname,
         [Parameter (Mandatory = $false)]
+        [ipaddress]$ip_address,
+        [Parameter (Mandatory = $false)]
         [string]$device_category,
         [Parameter (Mandatory = $false)]
         [string]$device_name,
@@ -62,6 +64,10 @@ function Add-ArubaCPDeviceFingerprint {
             $_dfp | add-member -name "hostname" -membertype NoteProperty -Value $hostname
         }
 
+        if ( $PsBoundParameters.ContainsKey('ip_address') ) {
+            $_dfp | add-member -name "ip" -membertype NoteProperty -Value $ip_address.ToString()
+        }
+
         $_device = new-Object -TypeName PSObject
         if ( $PsBoundParameters.ContainsKey('device_category') ) {
             $_device | add-member -name "category" -membertype NoteProperty -Value $device_category
@@ -77,11 +83,6 @@ function Add-ArubaCPDeviceFingerprint {
 
         $_dfp | add-member -name "device" -membertype NoteProperty -Value $_device
 
-        <#
-        if ( $PsBoundParameters.ContainsKey('attributes') ) {
-            $_dfp | add-member -name "attributes" -membertype NoteProperty -Value $attributes
-        }
-    #>
         $dfp = Invoke-ArubaCPRestMethod -method "POST" -body $_dfp -uri $uri -connection $connection
         $dfp
     }
