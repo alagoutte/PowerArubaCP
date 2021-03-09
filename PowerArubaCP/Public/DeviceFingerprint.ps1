@@ -101,7 +101,7 @@ function Get-ArubaCPDeviceFingerprint {
         Get Device Fingerprint (hostname, ip, device category/name/family)
 
         .EXAMPLE
-        Get-ArubaCPDeviceFingerprint -mac_adress 000102030405
+        Get-ArubaCPDeviceFingerprint -mac_address 000102030405
 
         Get Device FingerPrint about Endpoint 000102030405 Aruba on the ClearPass
 
