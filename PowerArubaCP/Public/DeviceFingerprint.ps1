@@ -8,26 +8,25 @@ function Add-ArubaCPDeviceFingerprint {
 
     <#
         .SYNOPSIS
-        Add an Endpoint on ClearPass
+        Add a Device Fingerprint on ClearPass
 
         .DESCRIPTION
-        Add an Endoint with mac address, description, status, attributes
+        Add an Device Fingerprint with mac address, hostname, ip (address) and device info (Category, Name, Familly)
 
         .EXAMPLE
-        Add-ArubaCPEndpoint -mac_address 000102030405 -description "Add by PowerArubaCP" -Status Known
+        Add-ArubaCPDeviceFingerprint -mac_address 000102030405 -hostname "My PowerArubaCP Device Fingerprint"
 
-        Add an Endpoint with MAC Address 000102030405 with Known Sattus and a description
-
-        .EXAMPLE
-        Add-ArubaCPEndpoint -mac_address 00:01:02:03:04:06 -status Unknown
-
-        Add an Endpoint with MAC Address 00:01:02:03:04:06 with Unknown Status
+        Add a Device Fingerprint with MAC Address 000102030405 and a hostname
 
         .EXAMPLE
-        $attributes = @{"Disabled by"="PowerArubaCP"}
-        PS >Add-ArubaCPEndpoint -mac_address 000102-030407 -Status Disabled -attributes $attributes
+        Add-ArubaCPDeviceFingerprint -mac_address 000102030405 -ip_address 192.0.2.1
 
-        Add an Endpoint with MAC Address 000102030405 with Disabled Status and attributes to Disabled by PowerArubaCP
+        Add a Device Fingerprint with MAC Address 000102030405 and an IP Address
+
+        .EXAMPLE
+        Add-ArubaCPDeviceFingerprint -mac_address 000102030405 -device_category Server -device_family ClearPass -device_name ClearPass VM
+
+        Add a Device Fingerprint with MAC Address 000102030405 with device information (Category, Name, Family)
     #>
 
     Param(
