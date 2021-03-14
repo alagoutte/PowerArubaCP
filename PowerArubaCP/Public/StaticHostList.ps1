@@ -186,7 +186,7 @@ function Get-ArubaCPStaticHostList {
         .EXAMPLE
         Get-ArubaCPStaticHostList SHL-PowerArubaCP
 
-        Get info about Statc Host Listn named SHL-PowerArubaCP on the ClearPass
+        Get info about Static Host List named SHL-PowerArubaCP on the ClearPass
 
         .EXAMPLE
         Get-ArubaCPStaticHostList -id 23
@@ -196,7 +196,7 @@ function Get-ArubaCPStaticHostList {
         .EXAMPLE
         Get-ArubaCPStaticHostList SHL-PowerArubaCP -filter_type contains
 
-        Get info about Statc Host List where name contains SHL-PowerArubaCP
+        Get info about Static Host List where name contains SHL-PowerArubaCP
 
        .EXAMPLE
         Get-ArubaCPStaticHostList -filter_attribute host_format -filter_type equal -filter_value list
