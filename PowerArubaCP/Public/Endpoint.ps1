@@ -124,7 +124,7 @@ function Get-ArubaCPEndpoint {
         [Parameter (Mandatory = $false, Position = 1)]
         [Parameter (ParameterSetName = "mac_address")]
         [string]$mac_address,
-        [Parameter (Mandatory = $false, Position = 1)]
+        [Parameter (Mandatory = $false)]
         [Parameter (ParameterSetName = "status")]
         [ValidateSet('Known', 'Unknown', 'Disabled')]
         [string]$status,

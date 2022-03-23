@@ -49,6 +49,14 @@ Describe "Get Endpoint" {
         $ep.description | Should -Be "Add by PowerArubaCP for Pester"
     }
 
+    It "Search Endpoint by name (000102030405) with position 1" {
+        $ep = Get-ArubaCPEndpoint 00-01-02-03-04-05
+        @($ep).count | Should -Be 1
+        $ep.id | Should -Not -BeNullOrEmpty
+        $ep.mac_address | Should -Be "000102030405"
+        $ep.description | Should -Be "Add by PowerArubaCP for Pester"
+    }
+
     It "Search Endpoint by description (contains *00-01-02-03-04*)" {
         $ep = Get-ArubaCPEndpoint -mac_address 00-01-02-03-04 -filter_type contains
         @($ep).count | Should -Be 2
