@@ -71,10 +71,6 @@ function Get-ArubaCPEnforcementPolicy {
 
     Process {
 
-        if ($connection.version -lt [version]"6.11.0") {
-            throw "Need ClearPass >= 6.11.0 for use this cmdlet"
-        }
-
         $invokeParams = @{ }
 
         if ( $PsBoundParameters.ContainsKey('limit') ) {
@@ -185,10 +181,6 @@ function Get-ArubaCPEnforcementProfile {
     }
 
     Process {
-
-        if ($connection.version -lt [version]"6.11.0") {
-            throw "Need ClearPass >= 6.11.0 for use this cmdlet"
-        }
 
         $invokeParams = @{ }
 
