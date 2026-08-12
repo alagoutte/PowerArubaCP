@@ -105,10 +105,6 @@ function Get-ArubaCPApplicationLicense {
 
     Process {
 
-        if ($connection.version -lt [version]"6.8.0") {
-            throw "Need ClearPass >= 6.8.0 for use this cmdlet"
-        }
-
         $uri = "api/application-license"
 
         $al = Invoke-ArubaCPRestMethod -method "GET" -uri $uri -connection $connection
