@@ -238,10 +238,6 @@ function Get-ArubaCPStaticHostList {
 
     Process {
 
-        if ($connection.version -lt [version]"6.8.0") {
-            throw "Need ClearPass >= 6.8.0 for use this cmdlet"
-        }
-
         $invokeParams = @{ }
         if ( $PsBoundParameters.ContainsKey('limit') ) {
             $invokeParams.add( 'limit', $limit )
