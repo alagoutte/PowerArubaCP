@@ -11,18 +11,18 @@ BeforeAll {
 
 Describe "Get Application License" {
 
-    It "Get Application License Does not throw an error" -Skip:$VersionBefore680 {
+    It "Get Application License Does not throw an error" {
         {
             Get-ArubaCPApplicationLicense
         } | Should -Not -Throw
     }
 
-    It "Get ALL Application License" -Skip:$VersionBefore680 {
+    It "Get ALL Application License" {
         $al = Get-ArubaCPApplicationLicense
         @($al).count | Should -Not -Be $NULL
     }
 
-    It "Get Application License and confirm" -Skip:$VersionBefore680 {
+    It "Get Application License and confirm" {
         $al = Get-ArubaCPApplicationLicense
         Confirm-ArubaCPApplicationLicense $al[0] | Should -Be $true
     }
@@ -31,14 +31,14 @@ Describe "Get Application License" {
 
 Describe "Add and Remove Application License" {
 
-    It "Add Application License ($pester_license_type)" -Skip:( -not ($pester_license -ne $null -and $VersionBefore680 -eq 0) ) {
+    It "Add Application License ($pester_license_type)" -Skip:( -not ($pester_license -ne $null ) ) {
         Add-ArubaCPApplicationLicense -product_name $pester_license_type -license_key $pester_license
         $al = Get-ArubaCPApplicationLicense -product_name $pester_license_type #Only check if search work !
         $al.id | Should -Not -BeNullOrEmpty
         $al.product_name | Should -Be $pester_license_type
     }
 
-    It "Remove Application License ($pester_license_type)" -Skip:( -not ($pester_license -ne $null -and $VersionBefore680 -eq 0)) {
+    It "Remove Application License ($pester_license_type)" -Skip:( -not ($pester_license -ne $null)) {
         Get-ArubaCPApplicationLicense -product_name $pester_license_type | Remove-ArubaCPApplicationLicense -confirm:$false
         $al = Get-ArubaCPApplicationLicense -product_name $pester_license_type
         $al | Should -Be $null
