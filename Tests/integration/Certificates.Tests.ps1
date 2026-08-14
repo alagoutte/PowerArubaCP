@@ -33,14 +33,14 @@ Describe "Get Cluster Certificates (Get-ArubaCPClusterCertificate)" {
         } | Should -Not -Throw
     }
 
-    It "Get Cluster Certificates with service_name Does not throw an error" -Skip:$VersionBefore6100 {
+    It "Get Cluster Certificates with service_name Does not throw an error" {
         {
             Get-ArubaCPClusterCertificate -service_name "HTTPS(ECC)"
         } | Should -Not -Throw
     }
 
 
-    It "Get Cluster Certificates with service_type Does not throw an error" -Skip:$VersionBefore6100 {
+    It "Get Cluster Certificates with service_type Does not throw an error" {
         {
             Get-ArubaCPClusterCertificate -certificate_type "HTTPS(RSA) Server Certificate"
         } | Should -Not -Throw
@@ -52,13 +52,13 @@ Describe "Get Cluster Certificates (Get-ArubaCPClusterCertificate)" {
         @($cc).count | Should -Not -Be $NULL
     }
 
-    It "Get Cluster Certificates with service_name" -Skip:$VersionBefore6100 {
+    It "Get Cluster Certificates with service_name" {
         $cc = Get-ArubaCPClusterCertificate -service_name "HTTPS(ECC)"
         @($cc).count | Should -Not -Be $NULL
     }
 
 
-    It "Get Cluster Certificates with service_type" -Skip:$VersionBefore6100 {
+    It "Get Cluster Certificates with service_type" {
         $cc = Get-ArubaCPClusterCertificate -certificate_type "HTTPS(RSA) Server Certificate"
         @($cc).count | Should -Not -Be $NULL
     }
@@ -79,7 +79,7 @@ Describe  "Get Server Certificate (Get-ArubaCPServerCertificate)" {
         @($cc).count | Should -Not -Be $NULL
     }
 
-    It "Get Server Certificate and confirm" -Skip:$VersionBefore6100 {
+    It "Get Server Certificate and confirm" {
         $cc = Get-ArubaCPServerCertificate -service_name "HTTPS(RSA)" -server_uuid $server_uuid
         Confirm-ArubaCPServerCertificate $cc | Should -Be $true
     }
