@@ -24,19 +24,9 @@ Describe "Get Server Configuration" {
         $sc.server_uuid | Should -Not -Be $NULL
         $sc.server_dns_name | Should -Not -Be $NULL
         $sc.management_ip | Should -Not -Be $NULL
-        if ($DefaultArubaCPConnection.version -ge "6.10.0") {
-            $sc.is_publisher | Should -Not -Be $NULL
-        }
-        else {
-            $sc.is_master | Should -Not -Be $NULL
-        }
+        $sc.is_publisher | Should -Not -Be $NULL
         $sc.is_insight_enabled | Should -Not -Be $NULL
-        if ($DefaultArubaCPConnection.version -ge "6.10.0") {
-            $sc.is_insight_primary | Should -Not -Be $NULL
-        }
-        else {
-            $sc.is_insight_master | Should -Not -Be $NULL
-        }
+        $sc.is_insight_primary | Should -Not -Be $NULL
         $sc.replication_status | Should -Not -Be $NULL
         $sc.is_profiler_enabled | Should -Not -Be $NULL
     }
