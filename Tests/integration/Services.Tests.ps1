@@ -29,12 +29,7 @@ Describe "Get Service" {
         $s.type | Should -Be "TACACS"
         $s.template | Should -Be "TACACS+ Enforcement"
         $s.enabled | Should -Be "True"
-        if ($DefaultArubaCPConnection.version -ge "6.9.6") {
-            $s.order_No | Should -Be "1"
-        }
-        else {
-            $s.orderNo | Should -Be "1"
-        }
+        $s.order_No | Should -Be "1"
     }
 
     It "Get Service (id 1) and confirm (via Confirm-ArubaCPService)" {
