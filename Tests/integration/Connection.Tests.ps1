@@ -49,7 +49,7 @@ Describe "Connect to a ClearPass (using multi connection)" {
     }
 
     Context "Use Multi connection for call some (Get) cmdlet (Application Licence, Version, NAS, SHL...)" {
-        It "Use Multi connection for call Get Application License" -Skip:$VersionBefore680 {
+        It "Use Multi connection for call Get Application License" {
             { Get-ArubaCPApplicationLicense -connection $cppm } | Should -Not -Throw
         }
         It "Use Multi connection for call Get Auth(entication) Source" {
