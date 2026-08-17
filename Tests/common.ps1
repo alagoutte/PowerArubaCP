@@ -32,12 +32,6 @@ Connect-ArubaCP @invokeParams
 $script:MySecurePassword = ConvertTo-SecureString MyPassword -AsPlainText -Force
 $script:MyNewSecurePassword = ConvertTo-SecureString MyNewassword -AsPlainText -Force
 
-$script:VersionBefore680 = $DefaultArubaCPConnection.Version -lt [version]"6.8.0"
-$script:VersionBefore686 = $DefaultArubaCPConnection.Version -lt [version]"6.8.6"
-$script:VersionBefore690 = $DefaultArubaCPConnection.Version -lt [version]"6.9.0"
-$script:VersionBefore6100 = $DefaultArubaCPConnection.Version -lt [version]"6.10.0"
-$script:VersionBefore6110 = $DefaultArubaCPConnection.Version -lt [version]"6.11.0"
-
 $script:server_uuid = (Get-ArubaCPServerConfiguration)[0].server_uuid
 
 Disconnect-ArubaCP -confirm:$false
