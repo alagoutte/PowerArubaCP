@@ -11,13 +11,13 @@ BeforeAll {
 
 Describe "Get Service" {
 
-    It "Get Service Does not throw an error" -Skip:$VersionBefore680 {
+    It "Get Service Does not throw an error" {
         {
             Get-ArubaCPService
         } | Should -Not -Throw
     }
 
-    It "Get Service" -Skip:$VersionBefore680 {
+    It "Get Service" {
         $s = Get-ArubaCPService
         $s.count | Should -Not -Be $NULL
     }
