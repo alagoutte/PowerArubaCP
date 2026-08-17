@@ -73,7 +73,7 @@ Describe "Connect to a ClearPass (using multi connection)" {
         It "Use Multi connection for call Get Server Version" {
             { Get-ArubaCPServerVersion -connection $cppm } | Should -Not -Throw
         }
-        It "Use Multi connection for call Get Static Host List" -Skip:$VersionBefore680 {
+        It "Use Multi connection for call Get Static Host List" {
             { Get-ArubaCPStaticHostList -connection $cppm } | Should -Not -Throw
         }
         It "Use Multi connection for call Get Endpoint" {
@@ -82,10 +82,10 @@ Describe "Connect to a ClearPass (using multi connection)" {
         It "Use Multi connection for call Get Api Client" {
             { Get-ArubaCPApiClient -connection $cppm } | Should -Not -Throw
         }
-        It "Use Multi connection for call Get Service" -Skip:$VersionBefore680 {
+        It "Use Multi connection for call Get Service" {
             { Get-ArubaCPService -connection $cppm } | Should -Not -Throw
         }
-        It "Use Multi connection for call Device Fingerprint" -Skip:$VersionBefore690 {
+        It "Use Multi connection for call Device Fingerprint" {
             $ip = (Get-ArubaCPServerConfiguration -connection $cppm).management_ip
             { Get-ArubaCPDeviceFingerprint -ip_address $ip -connection $cppm } | Should -Not -Throw
         }
@@ -101,10 +101,10 @@ Describe "Connect to a ClearPass (using multi connection)" {
         It "Use Multi connection for call Get Service Certificate" {
             { Get-ArubaCPServiceCertificate -connection $cppm } | Should -Not -Throw
         }
-        It "Use Multi connection for call Get Enforcement Policy" -Skip:$VersionBefore6110 {
+        It "Use Multi connection for call Get Enforcement Policy" {
             { Get-ArubaCPEnforcementPolicy -connection $cppm } | Should -Not -Throw
         }
-        It "Use Multi connection for call Get Enforcement Profile" -Skip:$VersionBefore6110 {
+        It "Use Multi connection for call Get Enforcement Profile" {
             { Get-ArubaCPEnforcementProfile -connection $cppm } | Should -Not -Throw
         }
     }
