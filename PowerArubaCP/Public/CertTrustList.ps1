@@ -188,3 +188,58 @@ function Get-ArubaCPCertTrustList {
     End {
     }
 }
+
+function Remove-ArubaCPCertTrustList {
+
+    <#
+        .SYNOPSIS
+        Remove a Certificate Trusted on ClearPass
+
+        .DESCRIPTION
+        Remove a Certificate Trusted on ClearPass
+
+        .EXAMPLE
+        $ctl = Get-ArubaCPCertTrustList -details | Where-Object { $_.signature_algorithm -eq "SHA1WITHRSA" }
+        PS C:\>$ctl | Remove-ArubaCPCertTrustList
+
+        Remove Certificate Trusted with signature algorithm equah SHA1
+
+        .EXAMPLE
+        Remove-ArubaCPApplicationLicense -id 3001 -confirm:$false
+
+        Remove Application License id 3001 with no confirmation
+    #>
+
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'high')]
+    Param(
+        [Parameter (Mandatory = $true, ParameterSetName = "id")]
+        [int]$id,
+        [Parameter (Mandatory = $true, ValueFromPipeline = $true, Position = 1, ParameterSetName = "ctl")]
+        [ValidateScript( { Confirm-ArubaCPCertTrust $_ })]
+        [psobject]$ctl,
+        [Parameter (Mandatory = $False)]
+        [ValidateNotNullOrEmpty()]
+        [PSObject]$connection = $DefaultArubaCPConnection
+    )
+
+    Begin {
+    }
+
+    Process {
+
+        #get Certificat Trust List id from ctl ps object
+        if ($ctl) {
+            $id = $ctl.id
+            $name = "(" + $ctl.subject_DN + ")"
+        }
+
+        $uri = "api/cert-trust-list/${id}"
+
+        if ($PSCmdlet.ShouldProcess("$id $name", 'Remove Certificate Trust')) {
+            Invoke-ArubaCPRestMethod -method "DELETE" -uri $uri -connection $connection
+        }
+    }
+
+    End {
+    }
+}
