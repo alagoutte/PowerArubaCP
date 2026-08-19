@@ -65,6 +65,28 @@ Function Confirm-ArubaCPApplicationLicense {
 
 }
 
+Function Confirm-ArubaCPCertTrust {
+
+    Param (
+        [Parameter (Mandatory = $true)]
+        [object]$argument
+    )
+
+    #Check if it looks like an Certificate Trust element
+
+    if ( -not ( $argument | get-member -name id -Membertype Properties)) {
+        throw "Element specified does not contain an id property."
+    }
+    if ( -not ( $argument | get-member -name enabled -Membertype Properties)) {
+        throw "Element specified does not contain an enabled property."
+    }
+    if ( -not ( $argument | get-member -name cert_usage -Membertype Properties)) {
+        throw "Element specified does not contain a cert_usage property."
+    }
+    $true
+
+}
+
 Function Confirm-ArubaCPEndpoint {
 
     Param (
