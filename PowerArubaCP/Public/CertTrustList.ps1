@@ -4,6 +4,71 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+function Add-ArubaCPCertTrustList {
+
+    <#
+        .SYNOPSIS
+        Add Certificate Trusted List info on CPPM
+
+        .DESCRIPTION
+        Add Certificate Trusted List (File, status and Usage)
+
+        .EXAMPLE
+        $cert = Get-Content PowerArubaCP.crt -Raw
+        Add-ArubaCPCertTrustList -cert_file $cert $cert_usage 'AD/LDAP Servers'
+
+        Add a Certificate Trusted List from cert file PowerAruba.crt with usage AD/LDAP Servers
+
+        .EXAMPLE
+        $cert = "-----BEGIN CERTIFICATE----- ..... -----END CERTIFICATE-----"
+        Add-ArubaCPCertTrustList -cert_file $cert $cert_usage 'Others' -enabled:$false
+
+        Add a Certificate Trusted List from $cert variable with usage Others and status disable
+    #>
+
+    Param(
+        [Parameter (Mandatory = $true)]
+        [string]$cert_file,
+        [Parameter (Mandatory = $false)]
+        [switch]$enabled,
+        [Parameter (Mandatory = $true)]
+        [ValidateSet('AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Syslog', 'Others', IgnoreCase = $false)]
+        [string[]]$cert_usage,
+        [Parameter (Mandatory = $False)]
+        [ValidateNotNullOrEmpty()]
+        [PSObject]$connection = $DefaultArubaCPConnection
+    )
+
+    Begin {
+    }
+
+    Process {
+
+        $uri = "api/cert-trust-list"
+
+        $_ctl = New-Object psobject
+
+        $_ctl | Add-Member -name "cert_file" -MemberType NoteProperty -Value $cert_file
+
+        if ( $PsBoundParameters.ContainsKey('enabled') ) {
+            if ( $enabled ) {
+                $_ctl | add-member -name "enabled" -membertype NoteProperty -Value $true
+            }
+            else {
+                $_ctl | add-member -name "enabled" -membertype NoteProperty -Value $false
+            }
+        }
+
+        $_ctl | Add-Member -name "cert_usage" -MemberType NoteProperty -Value $cert_usage
+
+        $ctl = Invoke-ArubaCPRestMethod -method "POST" -body $_ctl -uri $uri -connection $connection
+        $ctl
+    }
+
+    End {
+    }
+}
+
 function Get-ArubaCPCertTrustList {
 
     <#
