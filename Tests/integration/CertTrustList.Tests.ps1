@@ -71,6 +71,62 @@ Describe "Get Cert Trust List Detail" {
 
 }
 
+Describe "Add Cert Trust" {
+
+    It "Add Cert Trust (with cert_usage EAP)" {
+        Add-ArubaCPCertTrustList -cert_file $cert_trust -cert_usage EAP
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.id | Should -Not -BeNullOrEmpty
+        $ctl.subject_DN | Should -Not -BeNullOrEmpty
+        $ctl.issue_date | Should -Not -BeNullOrEmpty
+        $ctl.expiry_date | Should -Not -BeNullOrEmpty
+        $ctl.enabled | Should -Be $true
+        $ctl.valid | Should -Be "valid"
+        $ctl.signature_algorithm | Should -Not -BeNullOrEmpty
+        $ctl.public_key_format | Should -Not -BeNullOrEmpty
+        $ctl.serial_number | Should -Be $cert_sn
+        $ctl.cert_usage | Should -BeIn "EAP"
+        $ctl.issuer_DN | Should -Not -BeNullOrEmpty
+    }
+
+    It "Add Cert Trust (with cert_usage Database, Others)" {
+        Add-ArubaCPCertTrustList -cert_file $cert_trust -cert_usage Database, Others
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.id | Should -Not -BeNullOrEmpty
+        $ctl.subject_DN | Should -Not -BeNullOrEmpty
+        $ctl.issue_date | Should -Not -BeNullOrEmpty
+        $ctl.expiry_date | Should -Not -BeNullOrEmpty
+        $ctl.enabled | Should -Be $true
+        $ctl.valid | Should -Be "valid"
+        $ctl.signature_algorithm | Should -Not -BeNullOrEmpty
+        $ctl.public_key_format | Should -Not -BeNullOrEmpty
+        $ctl.serial_number | Should -Be $cert_sn
+        $ctl.cert_usage | Should -BeIn "Others", "Database"
+        $ctl.issuer_DN | Should -Not -BeNullOrEmpty
+    }
+
+    It "Add Cert Trust (with cert_usage RadSec and status disable)" {
+        Add-ArubaCPCertTrustList -cert_file $cert_trust -cert_usage RadSec -enabled:$false
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.id | Should -Not -BeNullOrEmpty
+        $ctl.subject_DN | Should -Not -BeNullOrEmpty
+        $ctl.issue_date | Should -Not -BeNullOrEmpty
+        $ctl.expiry_date | Should -Not -BeNullOrEmpty
+        $ctl.enabled | Should -Be $false
+        $ctl.valid | Should -Be "valid"
+        $ctl.signature_algorithm | Should -Not -BeNullOrEmpty
+        $ctl.public_key_format | Should -Not -BeNullOrEmpty
+        $ctl.serial_number | Should -Be $cert_sn
+        $ctl.cert_usage | Should -BeIn "RadSec"
+        $ctl.issuer_DN | Should -Not -BeNullOrEmpty
+    }
+
+    AfterEach {
+        Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn } | Remove-ArubaCPCertTrustList -confirm:$false
+    }
+
+}
+
 AfterAll {
     Disconnect-ArubaCP -confirm:$false
 }
