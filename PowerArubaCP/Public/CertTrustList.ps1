@@ -189,6 +189,89 @@ function Get-ArubaCPCertTrustList {
     }
 }
 
+function Set-ArubaCPCertTrustList {
+
+    <#
+        .SYNOPSIS
+        Set Certificate Trusted List on CPPM
+
+        .DESCRIPTION
+        Set Certificate Trusted List (Id, file, enabled, Usage ...)
+
+        .EXAMPLE
+        $ctl = Get-ArubaCPCertTrustList -id 23
+        PS > $ctl | Set-ArubaCPCertTrustList -enabled
+
+        Set Certificate Trust id 23 to enable
+
+        .EXAMPLE
+        $ctl = Get-ArubaCPCertTrustList -id 23
+        PS > $ctl | Set-ArubaCPCertTrustList -enabled:$false
+
+        Set Certificate Trust id 23 to disable
+
+        .EXAMPLE
+        $ctl = Get-ArubaCPCertTrustList -id 23
+        PS > $ctl | Set-ArubaCPCertTrustList -cert_isage EAP, Others
+
+        Set Certificate Trust id 23 usage to EAP and Others
+
+    #>
+
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'medium')]
+    Param(
+        [Parameter (Mandatory = $true, ParameterSetName = "id")]
+        [int]$id,
+        [Parameter (Mandatory = $true, ValueFromPipeline = $true, Position = 1, ParameterSetName = "ctl")]
+        [ValidateScript( { Confirm-ArubaCPCertTrust $_ })]
+        [psobject]$ctl,
+        [Parameter (Mandatory = $false)]
+        [switch]$enabled,
+        [Parameter (Mandatory = $false)]
+        [ValidateSet('AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Syslog', 'Others', IgnoreCase = $false)]
+        [string[]]$cert_usage,
+        [Parameter (Mandatory = $False)]
+        [ValidateNotNullOrEmpty()]
+        [PSObject]$connection = $DefaultArubaCPConnection
+    )
+
+    Begin {
+    }
+
+    Process {
+
+        #get Certificat Trust List id from ctl ps object
+        if ($ctl) {
+            $id = $ctl.id
+        }
+
+        $uri = "api/cert-trust-list/${id}"
+        $_ctl = new-Object -TypeName PSObject
+
+        if ( $PsBoundParameters.ContainsKey('enabled') ) {
+            if ( $enabled ) {
+                $_ctl | Add-member -name "enabled" -MemberType NoteProperty -Value $true
+            }
+            else {
+                $_ctl | Add-member -name "enabled" -MemberType NoteProperty -Value $false
+            }
+        }
+
+        if ( $PsBoundParameters.ContainsKey('cert_usage') ) {
+            $_ctl | Add-Member -name "cert_usage" -MemberType NoteProperty -Value $cert_usage
+        }
+
+        if ($PSCmdlet.ShouldProcess($id, 'Configure Cert Trust List')) {
+            $ctl = Invoke-ArubaCPRestMethod -method "PATCH" -body $_ctl -uri $uri -connection $connection
+            $ctl
+        }
+
+    }
+
+    End {
+    }
+}
+
 function Remove-ArubaCPCertTrustList {
 
     <#
