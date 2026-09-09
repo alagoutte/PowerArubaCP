@@ -170,6 +170,15 @@ Describe "Set Cert Trust" {
         $ctl.cert_usage | Should -BeIn "EAP", "Database"
     }
 
+    It "Set Cert Trust (All) cert usage " {
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl | Set-ArubaCPCertTrustList -cert_usage 'AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Syslog', 'Others'
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.id | Should -Not -BeNullOrEmpty
+        @($ctl.cert_usage).count | Should -Be 12
+        $ctl.cert_usage | Should -BeIn 'AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Syslog', 'Others'
+    }
+
     AfterAll {
         Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn } | Remove-ArubaCPCertTrustList -confirm:$false
     }
