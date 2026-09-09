@@ -171,12 +171,13 @@ Describe "Set Cert Trust" {
     }
 
     It "Set Cert Trust (All) cert usage " {
+        #All except Syslog..., need CPPM 6.14.x !
         $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
-        $ctl | Set-ArubaCPCertTrustList -cert_usage 'AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Syslog', 'Others'
+        $ctl | Set-ArubaCPCertTrustList -cert_usage 'AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Others'
         $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
         $ctl.id | Should -Not -BeNullOrEmpty
-        @($ctl.cert_usage).count | Should -Be 12
-        $ctl.cert_usage | Should -BeIn 'AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Syslog', 'Others'
+        @($ctl.cert_usage).count | Should -Be 11
+        $ctl.cert_usage | Should -BeIn 'AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Others'
     }
 
     AfterAll {
