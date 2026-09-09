@@ -186,6 +186,39 @@ Describe "Set Cert Trust" {
 
 }
 
+Describe "Remove Cert Trust" {
+
+    BeforeEach {
+        Add-ArubaCPCertTrustList -cert_file $cert_trust -cert_usage EAP
+    }
+
+    It "Remove Cert Trust by id" {
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.serial_number | Should -Be $cert_sn
+        @($ctl).count | Should -Be 1
+        Remove-ArubaCPCertTrustList -id $ctl.id -confirm:$false
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl | Should -BeNullOrEmpty
+        @($ctl).count | Should -Be 0
+    }
+
+    It "Remove Endpoint by pipeline" {
+
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.serial_number | Should -Be $cert_sn
+        @($ctl).count | Should -Be 1
+        $ctl | Remove-ArubaCPCertTrustList -confirm:$false
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl | Should -BeNullOrEmpty
+        @($ctl).count | Should -Be 0
+
+    }
+
+    AfterEach {
+        Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn } | Remove-ArubaCPCertTrustList -confirm:$false
+    }
+
+}
 
 AfterAll {
     Disconnect-ArubaCP -confirm:$false
