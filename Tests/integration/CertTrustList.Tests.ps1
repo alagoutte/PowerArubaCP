@@ -85,6 +85,7 @@ Describe "Add Cert Trust" {
         $ctl.signature_algorithm | Should -Not -BeNullOrEmpty
         $ctl.public_key_format | Should -Not -BeNullOrEmpty
         $ctl.serial_number | Should -Be $cert_sn
+        @($ctl.cert_usage).count | Should -Be 1
         $ctl.cert_usage | Should -BeIn "EAP"
         $ctl.issuer_DN | Should -Not -BeNullOrEmpty
     }
@@ -101,6 +102,7 @@ Describe "Add Cert Trust" {
         $ctl.signature_algorithm | Should -Not -BeNullOrEmpty
         $ctl.public_key_format | Should -Not -BeNullOrEmpty
         $ctl.serial_number | Should -Be $cert_sn
+        @($ctl.cert_usage).count | Should -Be 2
         $ctl.cert_usage | Should -BeIn "Others", "Database"
         $ctl.issuer_DN | Should -Not -BeNullOrEmpty
     }
@@ -117,6 +119,7 @@ Describe "Add Cert Trust" {
         $ctl.signature_algorithm | Should -Not -BeNullOrEmpty
         $ctl.public_key_format | Should -Not -BeNullOrEmpty
         $ctl.serial_number | Should -Be $cert_sn
+        @($ctl.cert_usage).count | Should -Be 1
         $ctl.cert_usage | Should -BeIn "RadSec"
         $ctl.issuer_DN | Should -Not -BeNullOrEmpty
     }
