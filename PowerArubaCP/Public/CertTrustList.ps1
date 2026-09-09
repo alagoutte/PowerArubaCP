@@ -69,6 +69,63 @@ function Add-ArubaCPCertTrustList {
     }
 }
 
+function Add-ArubaCPCertTrustListMember {
+
+    <#
+        .SYNOPSIS
+        Append cert_usage of Certificate Trusted List info on CPPM
+
+        .DESCRIPTION
+        Append cert_usage (EAP, Database...) of Certificate Trusted List
+
+        .EXAMPLE
+        $ctl = Get-ArubaCPCertTrustList -id 23
+        PS > $ctl | Add-ArubaCPCertTrustListMember -cert_usage Database
+
+        Add a cert_usage Database to Certificate Trust with id 23
+
+        .EXAMPLE
+        $ctl = Get-ArubaCPCertTrustList -id 23
+        PS > $ctl | Add-ArubaCPCertTrustListMember -cert_usage EAP, RadSec
+
+        Add a cert_usage EAP and RadSec to Certificate Trust with id 23
+    #>
+
+    Param(
+        [Parameter (Mandatory = $true, ValueFromPipeline = $true, Position = 1, ParameterSetName = "ctl")]
+        [ValidateScript( { Confirm-ArubaCPCertTrust $_ })]
+        [psobject]$ctl,
+        [Parameter (Mandatory = $true)]
+        [ValidateSet('AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Syslog', 'Others', IgnoreCase = $false)]
+        [string[]]$cert_usage,
+        [Parameter (Mandatory = $False)]
+        [ValidateNotNullOrEmpty()]
+        [PSObject]$connection = $DefaultArubaCPConnection
+    )
+
+    Begin {
+    }
+
+    Process {
+
+        $id = $ctl.id
+        $uri = "api/cert-trust-list/${id}"
+
+        $_ctl = New-Object psobject
+
+
+        #Add cert_usage
+        $cert_usage += $ctl.cert_usage
+        $_ctl | Add-Member -name "cert_usage" -MemberType NoteProperty -Value $cert_usage
+
+        $ctl = Invoke-ArubaCPRestMethod -method "PATCH" -body $_ctl -uri $uri -connection $connection
+        $ctl
+    }
+
+    End {
+    }
+}
+
 function Get-ArubaCPCertTrustList {
 
     <#
