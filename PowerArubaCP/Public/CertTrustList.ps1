@@ -15,13 +15,13 @@ function Add-ArubaCPCertTrustList {
 
         .EXAMPLE
         $cert = Get-Content PowerArubaCP.crt -Raw
-        Add-ArubaCPCertTrustList -cert_file $cert $cert_usage 'AD/LDAP Servers'
+        Add-ArubaCPCertTrustList -cert_file $cert -cert_usage 'AD/LDAP Servers'
 
         Add a Certificate Trusted List from cert file PowerAruba.crt with usage AD/LDAP Servers
 
         .EXAMPLE
         $cert = "-----BEGIN CERTIFICATE----- ..... -----END CERTIFICATE-----"
-        Add-ArubaCPCertTrustList -cert_file $cert $cert_usage 'Others' -enabled:$false
+        Add-ArubaCPCertTrustList -cert_file $cert -cert_usage 'Others' -enabled:$false
 
         Add a Certificate Trusted List from $cert variable with usage Others and status disable
     #>
