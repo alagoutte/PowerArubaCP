@@ -127,6 +127,53 @@ Describe "Add Cert Trust" {
 
 }
 
+Describe "Set Cert Trust" {
+
+    BeforeAll {
+        Add-ArubaCPCertTrustList -cert_file $cert_trust -cert_usage EAP
+    }
+
+    It "Set Cert Trust status disable" {
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl | Set-ArubaCPCertTrustList -enabled:$false
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.id | Should -Not -BeNullOrEmpty
+        $ctl.enabled | Should -Be $false
+    }
+
+    It "Set Cert Trust status enabled" {
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl | Set-ArubaCPCertTrustList -enabled
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.id | Should -Not -BeNullOrEmpty
+        $ctl.enabled | Should -Be $true
+    }
+
+    It "Set Cert Trust cert usage (Others)" {
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl | Set-ArubaCPCertTrustList -cert_usage Others
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.id | Should -Not -BeNullOrEmpty
+        @($ctl.cert_usage).count | Should -Be 1
+        $ctl.cert_usage | Should -BeIn "Others"
+    }
+
+    It "Set Cert Trust cert usage (EAP, Database)" {
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl | Set-ArubaCPCertTrustList -cert_usage EAP, Database
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.id | Should -Not -BeNullOrEmpty
+        @($ctl.cert_usage).count | Should -Be 2
+        $ctl.cert_usage | Should -BeIn "EAP", "Database"
+    }
+
+    AfterAll {
+        Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn } | Remove-ArubaCPCertTrustList -confirm:$false
+    }
+
+}
+
+
 AfterAll {
     Disconnect-ArubaCP -confirm:$false
 }
