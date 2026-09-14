@@ -261,6 +261,41 @@ Describe "Remove Cert Trust" {
 
 }
 
+Describe "Remove Cert Trust Member" {
+
+    BeforeAll {
+        #Add entrie with 4 cert_usage
+        Add-ArubaCPCertTrustList -cert_file $cert_trust -cert_usage EAP, Database, Others, RadSec
+    }
+
+    It "Remove one cert_usage (EAP)" {
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl | Remove-ArubaCPCertTrustListMember -cert_usage EAP
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.id | Should -Not -BeNullOrEmpty
+        @($ctl.cert_usage).count | Should -Be 3
+        $ctl.cert_usage | Should -BeIn Database, Others, RadSec
+    }
+
+    It "Remove 2 cert_usage (Database, Others)" {
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl | Remove-ArubaCPCertTrustListMember -cert_usage Database, Others
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        $ctl.id | Should -Not -BeNullOrEmpty
+        @($ctl.cert_usage).count | Should -Be 1
+        $ctl.cert_usage | Should -BeIn RadSec
+    }
+
+    It "Throw when remove all Entry" {
+        $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
+        { $ctl | Remove-ArubaCPCertTrustListMember -cert_usage RadSec } | Should -Throw "You can't remove all cert_usage. Use Remove-ArubaCPCertTrustList to remove Certificat Trust"
+    }
+
+    AfterAll {
+        Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn } | Remove-ArubaCPCertTrustList -confirm:$false
+    }
+}
+
 AfterAll {
     Disconnect-ArubaCP -confirm:$false
 }
