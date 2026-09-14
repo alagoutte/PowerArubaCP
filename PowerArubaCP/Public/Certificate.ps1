@@ -54,7 +54,7 @@ function Add-ArubaCPSelfSignedCertificate {
         [Parameter (Mandatory = $true)]
         [securestring]$private_key_password,
         [Parameter (Mandatory = $false)]
-        [ValidateSet('2048-bit rsa', '3072-bit rsa', '4096-bit rsa')]
+        [ValidateSet('2048-bit rsa', '3072-bit rsa', '4096-bit rsa', 'nist/secg curve over a 256 bit prime field', 'nist/secg curve over a 384 bit prime field', 'nist/secg curve over a 521 bit prime field')]
         [string]$private_key_type = "4096-bit rsa",
         [Parameter (Mandatory = $false)]
         [ValidateSet('SHA-1', 'SHA-224', 'SHA-256', 'SHA-384', 'SHA-512')]
