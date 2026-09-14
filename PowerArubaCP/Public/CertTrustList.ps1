@@ -383,3 +383,73 @@ function Remove-ArubaCPCertTrustList {
     End {
     }
 }
+
+function Remove-ArubaCPCertTrustListMember {
+
+    <#
+        .SYNOPSIS
+        Remove cert_usage of Certificate Trusted List info on CPPM
+
+        .DESCRIPTION
+        Remove cert_usage (EAP, Database...) of Certificate Trusted List
+
+        .EXAMPLE
+        $ctl = Get-ArubaCPCertTrustList -id 23
+        PS > $ctl | Remove-ArubaCPCertTrustListMember -cert_usage Database
+
+        Remove a cert_usage Database to Certificate Trust with id 23
+
+        .EXAMPLE
+        $ctl = Get-ArubaCPCertTrustList -id 23
+        PS > $ctl | Remove-ArubaCPCertTrustListMember -cert_usage EAP, RadSec
+
+        Remove a cert_usage EAP and RadSec to Certificate Trust with id 23
+    #>
+
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'medium')]
+    Param(
+        [Parameter (Mandatory = $true, ValueFromPipeline = $true, Position = 1, ParameterSetName = "ctl")]
+        [ValidateScript( { Confirm-ArubaCPCertTrust $_ })]
+        [psobject]$ctl,
+        [Parameter (Mandatory = $true)]
+        [ValidateSet('AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Syslog', 'Others', IgnoreCase = $false)]
+        [string[]]$cert_usage,
+        [Parameter (Mandatory = $False)]
+        [ValidateNotNullOrEmpty()]
+        [PSObject]$connection = $DefaultArubaCPConnection
+    )
+
+    Begin {
+    }
+
+    Process {
+
+        $id = $ctl.id
+        $uri = "api/cert-trust-list/${id}"
+
+        $_ctl = New-Object psobject
+
+        #Remove cert_usage
+        $_cert_usage = $ctL.cert_usage
+
+        foreach ($cert in $cert_usage) {
+
+            $_cert_usage = $_cert_usage | Where-Object { $_ -ne $cert }
+        }
+
+        if ( $_cert_usage.count -eq 0 ) {
+            Throw "You can't remove all cert_usage. Use Remove-ArubaCPCertTrustList to remove Certificat Trust"
+        }
+
+        #$cert_usage -= $ctl.cert_usage
+        $_ctl | Add-Member -name "cert_usage" -MemberType NoteProperty -Value @($_cert_usage)
+
+        if ($PSCmdlet.ShouldProcess("$cert_usage $id", 'Remove cert_usage')) {
+            $ctl = Invoke-ArubaCPRestMethod -method "PATCH" -body $_ctl -uri $uri -connection $connection
+            $ctl
+        }
+    }
+
+    End {
+    }
+}
