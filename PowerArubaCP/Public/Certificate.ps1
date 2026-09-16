@@ -34,6 +34,8 @@ function Add-ArubaCPSelfSignedCertificate {
         [Parameter (Mandatory = $true)]
         [ValidateSet("SERVICE", "SERVER")]
         [string]$certificate_type,
+        [Parameter (Mandatory = $false)]
+        [string]$server,
         [Parameter (Mandatory = $true)]
         [ValidateSet("RADIUS", "HTTPS(RSA)", "HTTPS(ECC)", "RadSec", "Database")]
         [string]$type,
@@ -77,6 +79,10 @@ function Add-ArubaCPSelfSignedCertificate {
         $_ssc | Add-Member -name "type" -MemberType NoteProperty -Value $type
 
         $_ssc | Add-Member -name "subject_CN" -MemberType NoteProperty -Value $common_name
+
+        if ( $PsBoundParameters.ContainsKey('server') ) {
+            $_ssc | Add-Member -name "server" -MemberType NoteProperty -Value $server
+        }
 
         if ( $PsBoundParameters.ContainsKey('organization') ) {
             $_ssc | Add-Member -name "subject_O" -MemberType NoteProperty -Value $organization
