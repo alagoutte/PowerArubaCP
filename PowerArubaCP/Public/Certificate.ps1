@@ -262,6 +262,12 @@ function Add-ArubaCPServerCertificate {
         PS > Add-ArubaCPServerCertificate -service_name RADIUS -server_uuid server_uuid -pkcs12_file_url http://192.0.2.1/PowerArubaCP.pfx -pkcs12_passphrase $passphrase
 
         Add certificate (pfx) for service RADIUS on CPPM Server with uuid from Get-ArubaCPServerConfiguration using passphrase
+
+        .EXAMPLE
+        $server_uuid = (Get-ArubaCPServerConfiguration).server_uuid
+        PS > Add-ArubaCPServerCertificate -service_name RadSec -server_uuid $server_uuid -certificate_url http://192.0.2.1/PowerArubaCP.crt
+
+        Add certificate (crt) for service RadSec on CPPM Server with uuid from Get-ArubaCPServerConfiguratione
     #>
 
     [CmdLetBinding(DefaultParameterSetName = "Default")]
@@ -272,10 +278,12 @@ function Add-ArubaCPServerCertificate {
         [string]$service_name,
         [Parameter (Mandatory = $true)]
         [string]$server_uuid,
-        [Parameter (Mandatory = $true)]
+        [Parameter (ParameterSetName = "pkcs12", Mandatory = $true)]
         [string]$pkcs12_file_url,
-        [Parameter (Mandatory = $true)]
+        [Parameter (ParameterSetName = "pkcs12", Mandatory = $true)]
         [securestring]$pkcs12_passphrase,
+        [Parameter (ParameterSetName = "crt", Mandatory = $true)]
+        [string]$certificate_url,
         [Parameter (Mandatory = $False)]
         [ValidateNotNullOrEmpty()]
         [PSObject]$connection = $DefaultArubaCPConnection
@@ -289,17 +297,25 @@ function Add-ArubaCPServerCertificate {
 
         $_cert = New-Object psobject
 
-        $_cert | Add-Member -name "pkcs12_file_url" -MemberType NoteProperty -Value $pkcs12_file_url
+        if ( $PSCmdlet.ParameterSetName -eq "pkcs12" ) {
+            $_cert | Add-Member -name "pkcs12_file_url" -MemberType NoteProperty -Value $pkcs12_file_url
 
-        if (("Desktop" -eq $PSVersionTable.PsEdition) -or ($null -eq $PSVersionTable.PsEdition)) {
-            $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pkcs12_passphrase);
-            $passphrase = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr);
-        }
-        else {
-            $passphrase = ConvertFrom-SecureString -SecureString $pkcs12_passphrase -AsPlainText
+            if (("Desktop" -eq $PSVersionTable.PsEdition) -or ($null -eq $PSVersionTable.PsEdition)) {
+                $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pkcs12_passphrase);
+                $passphrase = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr);
+            }
+            else {
+                $passphrase = ConvertFrom-SecureString -SecureString $pkcs12_passphrase -AsPlainText
+            }
+
+            $_cert | Add-Member -name "pkcs12_passphrase" -MemberType NoteProperty -Value $passphrase
         }
 
-        $_cert | Add-Member -name "pkcs12_passphrase" -MemberType NoteProperty -Value $passphrase
+        elseif ( $PSCmdlet.ParameterSetName -eq "crt" ) {
+
+            $_cert | Add-Member -name "certificate_url" -MemberType NoteProperty -Value $certificate_url
+
+        }
 
         $cert = Invoke-ArubaCPRestMethod -method "PUT" -uri $uri -body $_cert -connection $connection
 
