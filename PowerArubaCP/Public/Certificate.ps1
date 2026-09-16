@@ -32,7 +32,7 @@ function Add-ArubaCPSelfSignedCertificate {
 
     Param(
         [Parameter (Mandatory = $true)]
-        [ValidateSet("SERVICE")]
+        [ValidateSet("SERVICE", "SERVER")]
         [string]$certificate_type,
         [Parameter (Mandatory = $true)]
         [ValidateSet("RADIUS", "HTTPS(RSA)", "HTTPS(ECC)", "RadSec", "Database")]
