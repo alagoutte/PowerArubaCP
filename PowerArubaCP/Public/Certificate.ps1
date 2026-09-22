@@ -12,7 +12,7 @@ function Add-ArubaCPSelfSignedCertificate {
         Add a Self Signed Certificate on ClearPass
 
         .DESCRIPTION
-        Add a Self Signed Certificate (Service) on ClearPass (HTTPS, RADIUS, etc ...)
+        Add a Self Signed Certificate (Server or Service) on ClearPass (HTTPS, RADIUS, etc ...)
 
         .EXAMPLE
         $key_password = ConvertTo-SecureString mypassword -AsPlainText -Force
@@ -76,6 +76,7 @@ function Add-ArubaCPSelfSignedCertificate {
             $certificate_type = "service"
         }
         else {
+            #if you specify -server, add name of server
             $certificate_type = "server"
             $_ssc | Add-Member -name "server" -MemberType NoteProperty -Value $server
         }
