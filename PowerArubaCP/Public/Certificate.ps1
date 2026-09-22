@@ -70,32 +70,32 @@ function Add-ArubaCPCertSignRequest {
     Process {
         $uri = "api/cert-sign-request"
 
-        $_ssc = New-Object psobject
+        $_csr = New-Object psobject
 
-        $_ssc | Add-Member -name "subject_CN" -MemberType NoteProperty -Value $common_name
+        $_csr | Add-Member -name "subject_CN" -MemberType NoteProperty -Value $common_name
 
         if ( $PsBoundParameters.ContainsKey('organization') ) {
-            $_ssc | Add-Member -name "subject_O" -MemberType NoteProperty -Value $organization
+            $_csr | Add-Member -name "subject_O" -MemberType NoteProperty -Value $organization
         }
 
         if ( $PsBoundParameters.ContainsKey('organization_unit') ) {
-            $_ssc | Add-Member -name "subject_OU" -MemberType NoteProperty -Value $organization_unit
+            $_csr | Add-Member -name "subject_OU" -MemberType NoteProperty -Value $organization_unit
         }
 
         if ( $PsBoundParameters.ContainsKey('location') ) {
-            $_ssc | Add-Member -name "subject_L" -MemberType NoteProperty -Value $location
+            $_csr | Add-Member -name "subject_L" -MemberType NoteProperty -Value $location
         }
 
         if ( $PsBoundParameters.ContainsKey('state') ) {
-            $_ssc | Add-Member -name "subject_S" -MemberType NoteProperty -Value $state
+            $_csr | Add-Member -name "subject_S" -MemberType NoteProperty -Value $state
         }
 
         if ( $PsBoundParameters.ContainsKey('country') ) {
-            $_ssc | Add-Member -name "subject_C" -MemberType NoteProperty -Value $country
+            $_csr | Add-Member -name "subject_C" -MemberType NoteProperty -Value $country
         }
 
         if ( $PsBoundParameters.ContainsKey('san') ) {
-            $_ssc | Add-Member -name "subject_SAN" -MemberType NoteProperty -Value $san
+            $_csr | Add-Member -name "subject_SAN" -MemberType NoteProperty -Value $san
         }
 
         if (("Desktop" -eq $PSVersionTable.PsEdition) -or ($null -eq $PSVersionTable.PsEdition)) {
@@ -106,15 +106,15 @@ function Add-ArubaCPCertSignRequest {
             $key_password = ConvertFrom-SecureString -SecureString $private_key_password -AsPlainText
         }
 
-        $_ssc | Add-Member -name "private_key_password" -MemberType NoteProperty -Value $key_password
+        $_csr | Add-Member -name "private_key_password" -MemberType NoteProperty -Value $key_password
 
-        $_ssc | Add-Member -name "private_key_type" -MemberType NoteProperty -Value $private_key_type
+        $_csr | Add-Member -name "private_key_type" -MemberType NoteProperty -Value $private_key_type
 
-        $_ssc | Add-Member -name "digest_algorithm" -MemberType NoteProperty -Value $digest_algorithm
+        $_csr | Add-Member -name "digest_algorithm" -MemberType NoteProperty -Value $digest_algorithm
 
-        $ssc = Invoke-ArubaCPRestMethod -method "POST" -uri $uri -body $_ssc -connection $connection
+        $csr = Invoke-ArubaCPRestMethod -method "POST" -uri $uri -body $_csr -connection $connection
 
-        $ssc
+        $csr
     }
 
     End {
