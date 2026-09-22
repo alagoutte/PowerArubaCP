@@ -16,7 +16,7 @@ function Add-ArubaCPSelfSignedCertificate {
 
         .EXAMPLE
         $key_password = ConvertTo-SecureString mypassword -AsPlainText -Force
-        PS > Add-ArubaCPSelfSignedCertificate -certificate_type SERVICE -type HTTPS(RSA) -common_name MyPowerArubaCP -private_key_password $key_password
+        PS > Add-ArubaCPSelfSignedCertificate -certificate_type SERVICE -type "HTTPS(RSA)" -common_name MyPowerArubaCP -private_key_password $key_password
 
         Add Self Signed Certificate for service HTTPS (RSA) on SERVICE with Common Name MyPowerArubaCP (with default other settings)
 
