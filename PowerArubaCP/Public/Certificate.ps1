@@ -27,6 +27,11 @@ function Add-ArubaCPCertSignRequest {
 
         Add a Certificate Sign Request (CSR) with RSA 2048 and SHA-256 for cipher/digest algorithm
 
+        .EXAMPLE
+        $key_password = ConvertTo-SecureString mypassword -AsPlainText -Force
+        PS > Add-ArubaCPCertSignRequest -common_name MyPowerArubaCP-ECC -private_key_type "nist/secg curve over a 521 bit prime field"
+
+        Add a Certificate Sign Request (CSR) with Common Name MyPowerArubaCP-ECC and private key type ec|secp521r1
     #>
 
     [CmdLetBinding(DefaultParameterSetName = "Default")]
@@ -49,7 +54,7 @@ function Add-ArubaCPCertSignRequest {
         [Parameter (Mandatory = $true)]
         [securestring]$private_key_password,
         [Parameter (Mandatory = $false)]
-        [ValidateSet('2048-bit rsa', '3072-bit rsa', '4096-bit rsa')]
+        [ValidateSet('2048-bit rsa', '3072-bit rsa', '4096-bit rsa', 'nist/secg curve over a 256 bit prime field', 'nist/secg curve over a 384 bit prime field', 'nist/secg curve over a 521 bit prime field')]
         [string]$private_key_type = "4096-bit rsa",
         [Parameter (Mandatory = $false)]
         [ValidateSet('SHA-1', 'SHA-224', 'SHA-256', 'SHA-384', 'SHA-512')]
