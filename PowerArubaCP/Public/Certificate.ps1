@@ -16,25 +16,23 @@ function Add-ArubaCPSelfSignedCertificate {
 
         .EXAMPLE
         $key_password = ConvertTo-SecureString mypassword -AsPlainText -Force
-        PS > Add-ArubaCPSelfSignedCertificate -certificate_type SERVICE -type "HTTPS(RSA)" -common_name MyPowerArubaCP -private_key_password $key_password
+        PS > $server = Get-ArubaCPServerConfiguration
+        PS > Add-ArubaCPSelfSignedCertificate -server $server.name -type "HTTPS(RSA)" -common_name MyPowerArubaCP -private_key_password $key_password
 
-        Add Self Signed Certificate for service HTTPS (RSA) on SERVICE with Common Name MyPowerArubaCP (with default other settings)
+        Add Self Signed Certificate for service HTTPS (RSA) on SERVER MyCPPM (from $server.name) with Common Name MyPowerArubaCP (with default other settings)
 
         .EXAMPLE
         $key_password = ConvertTo-SecureString mypassword -AsPlainText -Force
-        PS > Add-ArubaCPSelfSignedCertificate -certificate_type SERVICE -type RADIUS -common_name MyPowerArubaCP -organization PowerAruba -organization_unit CP -location Aruba -state PowerAruba -country FR -san DNS:clearpass.example.net -private_key_password $key_password -private_key_type '2048-bit rsa' -digest_algorithm SHA-256
+        PS > Add-ArubaCPSelfSignedCertificate -type RADIUS -common_name MyPowerArubaCP -organization PowerAruba -organization_unit CP -location Aruba -state PowerAruba -country FR -san DNS:clearpass.example.net -private_key_password $key_password -private_key_type '2048-bit rsa' -digest_algorithm SHA-256
 
-        Add Self Signed Certificate for service RADIUS on service with custom certificate settings (CN, Organization, State...) and RSA 2048 with SHA-256 for cipher/digest algorithm
+        Add Self Signed Certificate for service RADIUS on SERVICE with custom certificate settings (CN, Organization, State...) and RSA 2048 with SHA-256 for cipher/digest algorithm
 
     #>
 
-    [CmdLetBinding(DefaultParameterSetName = "Default")]
+    [CmdLetBinding(DefaultParameterSetName = "service")]
 
     Param(
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("SERVICE", "SERVER")]
-        [string]$certificate_type,
-        [Parameter (Mandatory = $false)]
+        [Parameter (Mandatory = $true, ParameterSetName = "server")]
         [string]$server,
         [Parameter (Mandatory = $true)]
         [ValidateSet("RADIUS", "HTTPS(RSA)", "HTTPS(ECC)", "RadSec", "Database")]
@@ -74,6 +72,14 @@ function Add-ArubaCPSelfSignedCertificate {
 
         $_ssc = New-Object psobject
 
+        if ($PSCmdlet.ParameterSetName -eq "service" ) {
+            $certificate_type = "service"
+        }
+        else {
+            $certificate_type = "server"
+            $_ssc | Add-Member -name "server" -MemberType NoteProperty -Value $server
+        }
+
         $_ssc | Add-Member -name "certificate_type" -MemberType NoteProperty -Value $certificate_type
 
         #Ugly hack add Server Certificate to all type some API call (Server) need complete name...
@@ -81,10 +87,6 @@ function Add-ArubaCPSelfSignedCertificate {
         $_ssc | Add-Member -name "type" -MemberType NoteProperty -Value $type_sc
 
         $_ssc | Add-Member -name "subject_CN" -MemberType NoteProperty -Value $common_name
-
-        if ( $PsBoundParameters.ContainsKey('server') ) {
-            $_ssc | Add-Member -name "server" -MemberType NoteProperty -Value $server
-        }
 
         if ( $PsBoundParameters.ContainsKey('organization') ) {
             $_ssc | Add-Member -name "subject_O" -MemberType NoteProperty -Value $organization
