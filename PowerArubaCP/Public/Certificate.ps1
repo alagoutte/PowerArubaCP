@@ -76,7 +76,9 @@ function Add-ArubaCPSelfSignedCertificate {
 
         $_ssc | Add-Member -name "certificate_type" -MemberType NoteProperty -Value $certificate_type
 
-        $_ssc | Add-Member -name "type" -MemberType NoteProperty -Value $type
+        #Ugly hack add Server Certificate to all type some API call (Server) need complete name...
+        $type_sc = $type + " Server Certificate"
+        $_ssc | Add-Member -name "type" -MemberType NoteProperty -Value $type_sc
 
         $_ssc | Add-Member -name "subject_CN" -MemberType NoteProperty -Value $common_name
 
