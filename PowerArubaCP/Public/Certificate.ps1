@@ -10,10 +10,10 @@ function Add-ArubaCPCertSignRequest {
 
     <#
         .SYNOPSIS
-        Add a Cert(ificate) Sign Request (CSR) Certificate on ClearPass
+        Add a Cert(ificate) Sign Request (CSR) on ClearPass
 
         .DESCRIPTION
-        Add a Cert(ificate) Sign Request (CSR) Certificate on ClearPass(HTTPS, RADIUS, etc ...)
+        Add a Cert(ificate) Sign Request (CSR) on ClearPass(HTTPS, RADIUS, etc ...)
 
         .EXAMPLE
         $key_password = ConvertTo-SecureString mypassword -AsPlainText -Force
