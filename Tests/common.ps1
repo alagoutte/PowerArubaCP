@@ -31,6 +31,7 @@ if ($null -eq $port) {
 Connect-ArubaCP @invokeParams
 $script:MySecurePassword = ConvertTo-SecureString MyPassword -AsPlainText -Force
 $script:MyNewSecurePassword = ConvertTo-SecureString MyNewassword -AsPlainText -Force
+$script:key_password = ConvertTo-SecureString mypassword -AsPlainText -Force
 
 $script:VersionBefore680 = $DefaultArubaCPConnection.Version -lt [version]"6.8.0"
 $script:VersionBefore686 = $DefaultArubaCPConnection.Version -lt [version]"6.8.6"

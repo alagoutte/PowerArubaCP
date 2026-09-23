@@ -86,6 +86,29 @@ Describe  "Get Server Certificate (Get-ArubaCPServerCertificate)" {
 
 }
 
+Describe  "Add Certificate Sign Request (CSR)" {
+
+    It "Add Certificate Sign Request (CSR) with default parameter (RSA 4096 / SHA-512)" {
+        $csr = Add-ArubaCPCertSignRequest -common_name MyPowerArubaCP -private_key_password $key_password
+        $csr.cert_sign_request | Should -Not -Be $NULL
+    }
+
+    It "Add Certificate Sign Request (CSR) with all parameters (org, location, state, Country, san...)" {
+        $csr = Add-ArubaCPCertSignRequest -common_name MyPowerArubaCP -organization PowerAruba -organization_unit CP -location Aruba -state PowerAruba -country FR -san DNS:clearpass.example.net -private_key_password $key_password
+        $csr.cert_sign_request | Should -Not -Be $NULL
+    }
+
+    It "Add Certificate Sign Request (CSR) with other private key type/digest (RSA 2048 / SHA-256)" {
+        $csr = Add-ArubaCPCertSignRequest -common_name MyPowerArubaCP -private_key_password $key_password -private_key_type '2048-bit rsa' -digest_algorithm SHA-256
+        $csr.cert_sign_request | Should -Not -Be $NULL
+    }
+
+    It "Add Certificate Sign Request (CSR) with ECC private key type/digest (ec|secp521r1)" {
+        $csr = Add-ArubaCPCertSignRequest -common_name MyPowerArubaCP -private_key_password $key_password -private_key_type 'nist/secg curve over a 521 bit prime field'
+        $csr.cert_sign_request | Should -Not -Be $NULL
+    }
+}
+
 AfterAll {
     Disconnect-ArubaCP -confirm:$false
 }
