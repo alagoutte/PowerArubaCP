@@ -1,5 +1,5 @@
 #
-# Copyright 2021, Cedric Moreau <moreaucedric0 at gmail dot com>
+# Copyright 2026, Alexis La Goutte <alexis dot lagoutte at gmail dot com>
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -252,7 +252,6 @@ Describe "Remove Cert Trust" {
         $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
         $ctl | Should -BeNullOrEmpty
         @($ctl).count | Should -Be 0
-
     }
 
     AfterEach {
@@ -264,11 +263,11 @@ Describe "Remove Cert Trust" {
 Describe "Remove Cert Trust Member" {
 
     BeforeAll {
-        #Add entrie with 4 cert_usage
+        #Add entry with 4 cert_usage
         Add-ArubaCPCertTrustList -cert_file $cert_trust -cert_usage EAP, Database, Others, RadSec
     }
 
-    It "Remove one cert_usage (EAP)" {
+    It "Remove 1 cert_usage (EAP)" {
         $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
         $ctl | Remove-ArubaCPCertTrustListMember -cert_usage EAP
         $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
@@ -286,7 +285,7 @@ Describe "Remove Cert Trust Member" {
         $ctl.cert_usage | Should -BeIn RadSec
     }
 
-    It "Throw when remove all Entry" {
+    It "Throw when remove all entries (cert_usage)" {
         $ctl = Get-ArubaCPCertTrustList -details -limit 1000 | Where-Object { $_.serial_number -eq $cert_sn }
         { $ctl | Remove-ArubaCPCertTrustListMember -cert_usage RadSec } | Should -Throw "You can't remove all cert_usage. Use Remove-ArubaCPCertTrustList to remove Certificat Trust"
     }
