@@ -52,10 +52,10 @@ function Add-ArubaCPCertTrustList {
 
         if ( $PsBoundParameters.ContainsKey('enabled') ) {
             if ( $enabled ) {
-                $_ctl | add-member -name "enabled" -membertype NoteProperty -Value $true
+                $_ctl | Add-Member -name "enabled" -membertype NoteProperty -Value $true
             }
             else {
-                $_ctl | add-member -name "enabled" -membertype NoteProperty -Value $false
+                $_ctl | Add-Member -name "enabled" -membertype NoteProperty -Value $false
             }
         }
 
@@ -93,7 +93,7 @@ function Add-ArubaCPCertTrustListMember {
 
     Param(
         [Parameter (Mandatory = $true, ValueFromPipeline = $true, Position = 1, ParameterSetName = "ctl")]
-        [ValidateScript( { Confirm-ArubaCPCertTrust $_ })]
+        [ValidateScript({ Confirm-ArubaCPCertTrust $_ })]
         [psobject]$ctl,
         [Parameter (Mandatory = $true)]
         [ValidateSet('AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Syslog', 'Others', IgnoreCase = $false)]
@@ -112,7 +112,6 @@ function Add-ArubaCPCertTrustListMember {
         $uri = "api/cert-trust-list/${id}"
 
         $_ctl = New-Object psobject
-
 
         #Add cert_usage
         $cert_usage += $ctl.cert_usage
@@ -280,7 +279,7 @@ function Set-ArubaCPCertTrustList {
         [Parameter (Mandatory = $true, ParameterSetName = "id")]
         [int]$id,
         [Parameter (Mandatory = $true, ValueFromPipeline = $true, Position = 1, ParameterSetName = "ctl")]
-        [ValidateScript( { Confirm-ArubaCPCertTrust $_ })]
+        [ValidateScript({ Confirm-ArubaCPCertTrust $_ })]
         [psobject]$ctl,
         [Parameter (Mandatory = $false)]
         [switch]$enabled,
@@ -307,10 +306,10 @@ function Set-ArubaCPCertTrustList {
 
         if ( $PsBoundParameters.ContainsKey('enabled') ) {
             if ( $enabled ) {
-                $_ctl | Add-member -name "enabled" -MemberType NoteProperty -Value $true
+                $_ctl | Add-Member -name "enabled" -MemberType NoteProperty -Value $true
             }
             else {
-                $_ctl | Add-member -name "enabled" -MemberType NoteProperty -Value $false
+                $_ctl | Add-Member -name "enabled" -MemberType NoteProperty -Value $false
             }
         }
 
@@ -345,9 +344,9 @@ function Remove-ArubaCPCertTrustList {
         Remove Certificate Trusted with signature algorithm equah SHA1
 
         .EXAMPLE
-        Remove-ArubaCPApplicationLicense -id 3001 -confirm:$false
+        Remove-ArubaCPCertTrustList -id 3001 -confirm:$false
 
-        Remove Application License id 3001 with no confirmation
+        Remove Certificate Trusted with id 3001 with no confirmation
     #>
 
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'high')]
@@ -355,7 +354,7 @@ function Remove-ArubaCPCertTrustList {
         [Parameter (Mandatory = $true, ParameterSetName = "id")]
         [int]$id,
         [Parameter (Mandatory = $true, ValueFromPipeline = $true, Position = 1, ParameterSetName = "ctl")]
-        [ValidateScript( { Confirm-ArubaCPCertTrust $_ })]
+        [ValidateScript({ Confirm-ArubaCPCertTrust $_ })]
         [psobject]$ctl,
         [Parameter (Mandatory = $False)]
         [ValidateNotNullOrEmpty()]
@@ -409,7 +408,7 @@ function Remove-ArubaCPCertTrustListMember {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'medium')]
     Param(
         [Parameter (Mandatory = $true, ValueFromPipeline = $true, Position = 1, ParameterSetName = "ctl")]
-        [ValidateScript( { Confirm-ArubaCPCertTrust $_ })]
+        [ValidateScript({ Confirm-ArubaCPCertTrust $_ })]
         [psobject]$ctl,
         [Parameter (Mandatory = $true)]
         [ValidateSet('AD/LDAP Servers', 'Aruba Infrastructure', 'Aruba Services', 'Database', 'EAP', 'Endpoint Context Servers', 'RadSec', 'SAML', 'SMTP', 'EST', 'Syslog', 'Others', IgnoreCase = $false)]
@@ -433,7 +432,6 @@ function Remove-ArubaCPCertTrustListMember {
         $_cert_usage = $ctL.cert_usage
 
         foreach ($cert in $cert_usage) {
-
             $_cert_usage = $_cert_usage | Where-Object { $_ -ne $cert }
         }
 
@@ -441,7 +439,6 @@ function Remove-ArubaCPCertTrustListMember {
             Throw "You can't remove all cert_usage. Use Remove-ArubaCPCertTrustList to remove Certificat Trust"
         }
 
-        #$cert_usage -= $ctl.cert_usage
         $_ctl | Add-Member -name "cert_usage" -MemberType NoteProperty -Value @($_cert_usage)
 
         if ($PSCmdlet.ShouldProcess("$cert_usage $id", 'Remove cert_usage')) {
