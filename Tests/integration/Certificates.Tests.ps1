@@ -109,6 +109,58 @@ Describe  "Add Certificate Sign Request (CSR)" {
     }
 }
 
+Describe  "Add Self Signed Certificate" {
+
+    Context "Service" {
+        It "Add Service Self Signed Certificate (HTTPS RSA) with default parameter (RSA 4096 / SHA-512)" {
+            $ssc = Add-ArubaCPSelfSignedCertificate -type "HTTPS(RSA)" -common_name MyPowerArubaCP -private_key_password $key_password
+            $ssc.certificate_type | Should -Be "service"
+            $ssc.type | Should -Be "HTTPS(RSA) Server Certificate"
+            $ssc.subject_CN | Should -Be "MyPowerArubaCP"
+            $ssc.private_key_password | Should -Be "mypassword"
+            $ssc.private_key_type | Should -Be "4096-bit rsa"
+            $ssc.digest_algorithm | Should -Be "SHA-512"
+        }
+
+        It "Add Service Self Signed Certificate (HTTPS RSA) with parameter (RSA 2048 / SHA-256)" {
+            $ssc = Add-ArubaCPSelfSignedCertificate -type "HTTPS(RSA)" -common_name MyPowerArubaCP -private_key_password $key_password -private_key_type "2048-bit rsa" -digest_algorithm SHA-256
+            $ssc.certificate_type | Should -Be "service"
+            $ssc.type | Should -Be "HTTPS(RSA) Server Certificate"
+            $ssc.subject_CN | Should -Be "MyPowerArubaCP"
+            $ssc.private_key_type | Should -Be "2048-bit rsa"
+            $ssc.digest_algorithm | Should -Be "SHA-256"
+        }
+
+        It "Add Service Self Signed Certificate (HTTPS RSA) with other parameter (org, location, state, Country, san...)" {
+            $ssc = Add-ArubaCPSelfSignedCertificate -type "HTTPS(RSA)" -common_name MyPowerArubaCP -private_key_password $key_password -organization PowerAruba -organization_unit CP -location Aruba -state PowerAruba -country FR -san DNS:clearpass.example.net
+            $ssc.certificate_type | Should -Be "service"
+            $ssc.type | Should -Be "HTTPS(RSA) Server Certificate"
+            $ssc.subject_CN | Should -Be "MyPowerArubaCP"
+            $ssc.private_key_type | Should -Be "4096-bit rsa"
+            $ssc.digest_algorithm | Should -Be "SHA-512"
+            $ssc.subject_O | Should -Be "PowerAruba"
+            $ssc.subject_OU | Should -Be "CP"
+            $ssc.subject_L | Should -Be "Aruba"
+            $ssc.subject_C | Should -Be "FR"
+            $ssc.subject_SAN | Should -Be "DNS:clearpass.example.net"
+        }
+
+        It "Add Service Self Signed Certificate (HTTPS ECC) with parameter (ec|secp521r1 / SHA-384)" {
+            $ssc = Add-ArubaCPSelfSignedCertificate -type "HTTPS(ECC)" -common_name MyPowerArubaCP -private_key_password $key_password  -private_key_type 'nist/secg curve over a 521 bit prime field' -digest_algorithm SHA-384
+            $ssc.certificate_type | Should -Be "service"
+            $ssc.type | Should -Be "HTTPS(ECC) Server Certificate"
+            $ssc.subject_CN | Should -Be "MyPowerArubaCP"
+            $ssc.private_key_type | Should -Be "nist/secg curve over a 521 bit prime field"
+            $ssc.digest_algorithm | Should -Be "SHA-384"
+        }
+    }
+
+    Context "Server" {
+
+    }
+
+}
+
 AfterAll {
     Disconnect-ArubaCP -confirm:$false
 }
